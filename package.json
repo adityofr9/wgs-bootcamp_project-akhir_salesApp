@@ -1,0 +1,32 @@
+{
+  "name": "wgs-bootcamp_project-akhir_salesapp",
+  "version": "1.0.0",
+  "description": "Project Aplikasi Penjualan (Beras) Bootcamp WGS Batch 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adityofr9/wgs-bootcamp_project-akhir_salesApp.git"
+  },
+  "author": "Muhammad Adityo Fathur Rahim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adityofr9/wgs-bootcamp_project-akhir_salesApp/issues"
+  },
+  "homepage": "https://github.com/adityofr9/wgs-bootcamp_project-akhir_salesApp#readme",
+  "dependencies": {
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.3",
+    "express-validator": "^6.14.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.19",
+    "pg": "^8.7.3",
+    "validator": "^13.7.0"
+  }
+}
