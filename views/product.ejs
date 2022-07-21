@@ -1,0 +1,63 @@
+<div class="container">
+    <div class="p-5" style="margin-top: 50px;">
+        <h1>Hello, <%= nama %></h1>
+        <p>This is product list page</p>
+        <hr>
+        <br>
+        <h3>Product List</h3>
+        <a href="/product/add" class="btn btn-primary">Add product</a>
+        <!-- Pengkondisian bila terdapat pesan flash message yang ingin ditampilkan -->
+        <% if (msg.length !== 0) { %>
+            <div class="alert alert-warning mt-3" role="alert">
+                <%= msg %> 
+            </div>
+        <% } %>
+        <table class="table mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Code Product</th>
+                    <th scope="col">Name Product</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Price per Kg</th>
+                    <th scope="col">Price per Sack</th>
+                    <th scope="col">Stock <sub>(Kilograms)</sub></th>
+                    <th scope="col">Added Date</th>
+                    <th scope="col">Image Product</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                <!-- Pengkondisian apabila data kosong -->
+                <% if (pdt.length < 1) { %>
+                    <tr>
+                        <th scope="col" colspan="4">
+                            <div class="alert alert-danger mt-3" role="alert">
+                                <b>Products data is empty!</b>
+                            </div>
+                        </th>
+                    </tr>
+                <% } else { %>
+                    <!-- Pemanggilan isi properti dari setiap object contacts.json -->
+                    <% pdt.forEach((product, i) => { %>
+                        <tr>
+                            <th scope="row"><%= i+1  %></th>
+                            <td><%= product.code_product %></td>
+                            <td><%= product.name_product %></td>
+                            <td><%= product.category %></td>
+                            <td>Rp. <%= product.price_unit %></td>
+                            <td>Rp. <%= product.price_sack %></td>
+                            <td><%= product.stock %> Kg</td>
+                            <td><%= product.added_date %></td>
+                            <td><img src="../img/<%= product.img_product %>" width="125"><%#= product.added_date %></td>
+                            <td>
+                                <a href="/product/<%= product.id%>" class="badge rounded-pill btn-success p-2">Detail</a>
+                                <a href="/delete/<%= product.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= product.code_product%> - <%= product.name%> from data?')">Delete</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %> 
+            </tbody>
+        </table>
+    </div>
+</div>

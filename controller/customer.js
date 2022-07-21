@@ -16,7 +16,7 @@ const checkDataId = async (value) => {
     return cst;
 }
 
-//Fungsi untuk memuat semua data pada tabel contact dari database
+//Fungsi untuk memuat semua data pada tabel customer dari database
 const loadCustomer = async (req, res) => {
     const query = await pool.query('SELECT * FROM customer')
     const cst =  query.rows;
@@ -32,7 +32,7 @@ const loadCustomer = async (req, res) => {
 const addCustomer = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        res.render('add-customer', {
+        res.render('customer-add', {
             title: "Add Customer Form",
             errors: errors.array(),
             tempParams: req.body,
@@ -55,7 +55,7 @@ const updateCustomer = async (req, res) => {
     const cst = await checkDataId(req.params.id)
     // console.log(errors)
     if (!errors.isEmpty()) {
-        res.render('edit-customer', {
+        res.render('customer-edit', {
             title: "Add Customer Data Form",
             errors: errors.array(),
             cst,
@@ -80,7 +80,7 @@ const updateCustomer = async (req, res) => {
 const detailCustomer = async (req, res) => {
     //Variabel untuk menyimpan sebuah object dari data Customer yang dipilih berdasarkan id
     const cst = await checkDataId(req.params.id)
-    res.render('detail', {title: 'Detail Customer Page', cst})
+    res.render('customer-detail', {title: 'Detail Customer Page', cst})
 }
 
 //Fungsi untuk menghapus data yang dipilih dari database
@@ -102,10 +102,10 @@ const deleteCustomer = async (req, res) => {
 const editCstPage = async (req, res) => {
     //Variabel untuk menyimpan sebuah object dari data contact yang dipilih
     const cst = await checkDataId(req.params.id)
-    res.render('edit-customer', {title: 'Edit Customer Page', cst})
+    res.render('customer-edit', {title: 'Edit Customer Page', cst})
 }
 
-//Export module dari contact.js
+//Export module yang ada di dalam customer.js ini
 module.exports = { 
     checkData, 
     checkDataId, 

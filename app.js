@@ -6,8 +6,9 @@ var expressLayouts = require('express-ejs-layouts');
 //3rd party Middleware Morgan
 var morgan = require('morgan')
 
-//Import semua fungsi dari contact.js
+//Module dari controller
 const customer = require('./controller/customer.js');
+const product = require('./controller/product.js');
 //Module Config
 const config = require('./config')
 //Memanggil database
@@ -20,6 +21,10 @@ const { default: isEmail } = require('validator/lib/isEmail.js');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
+
+//Module multer untuk upload image
+const multer  = require('multer')
+const path = require('path')
 
 app.use(express.json()) // => req.body
 
@@ -63,12 +68,11 @@ app.get('/about', (req, res) => {
 
 //ROUTE UNTUK CUSTOMER
 //Route untuk halaman customer list
-//Route yang dituju, fungsi dari customer.js yang dipanggil
 app.get('/customer', customer.loadCustomer)
 
 //Route list tambah data Customer
 app.get('/customer/add', (req, res, next) => {
-    res.render('add-customer', {title: 'Add Customer Page'})
+    res.render('customer-add', {title: 'Add Customer Page'})
 })
 
 //Route untuk menerima data input dari form Tambah Customer
@@ -94,6 +98,31 @@ app.get('/delete/:id', customer.deleteCustomer);
 
 
 //ROUTE UNTUK PRODUCT
+//Route untuk halaman product list
+app.get('/product', product.loadProduct)
+
+// MULTERRR
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/img')
+    },
+    filename: function (req, file, cb) {
+        console.log();
+        cb(null, `image-${Date.now()}` + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({ storage: storage })
+
+//Route list tambah data Customer
+app.get('/product/add', (req, res, next) => {
+    res.render('product-add', {title: 'Add Product Page'})
+})
+
+//Route untuk menerima data input dari form Tambah Customer
+app.post('/product', upload.array('img_product', 1),
+    product.addProduct)
+
 
 
 //Jika url dimasukkan selain routes list yang tersedia
