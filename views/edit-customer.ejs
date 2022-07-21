@@ -1,12 +1,12 @@
 <div class="container">
     <div class="p-5" style="margin-top: 50px;">
-        <h1>Edit Contact</h1>
-        <p>This is edit contact form</p>
+        <h1>Edit Customer</h1>
+        <p>This is edit customer form</p>
         <hr>
-        <% if (!cont) { %>
+        <% if (!cst) { %>
             <div class="alert alert-danger" role="alert">
-                Contact Data is not found! <br>
-                <a href="/contact" class="card-link">Back to contact page</a>
+                Customer Data is not found! <br>
+                <a href="/customer" class="card-link">Back to customer page</a>
             </div>
         <% } else { %>
             <br>
@@ -20,18 +20,18 @@
                         </ul>
                     </div>
                     <% } %>
-                    <form method="post" action="/edit/<%= cont.name %>" class="col-6">
+                    <form method="post" action="/edit/<%= cst.id %>" class="col-6">
                         <div class="mb-3">
                             <label for="inputName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="inputName" name="name" value="<%= cont.name %>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="inputEmail" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="inputEmail" name="email" value="<%= cont.email %>">
+                            <input type="text" class="form-control" id="inputName" name="name" value="<%= cst.name %>" required>
                         </div>
                         <div class="mb-3">
                             <label for="inputMobile" class="form-label">Mobile Phone</label>
-                            <input type="number" class="form-control" id="inputMobile" name="mobile" value="<%= cont.mobile %>" required>
+                            <input type="number" class="form-control" id="inputMobile" name="mobile" value="<%= cst.mobile %>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputAddress" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="inputAddress" name="address" value="<%= cst.address %>">
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>

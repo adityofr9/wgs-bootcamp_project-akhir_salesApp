@@ -1,6 +1,6 @@
 //Memanggil database
 const pool = require("../models/db")
-const { validationResult } = require('express-validator/check');
+const { validationResult } = require('express-validator');
 
 //Fungsi untuk mengecek data yang dipilih berdasarkan nama ada atau tidak di dalam database
 const checkData = async (value) => {
@@ -44,8 +44,35 @@ const addCustomer = async (req, res) => {
         //Kueri untuk menambahkan input tambah data contact ke database
         await pool.query(`INSERT INTO customer (name, mobile, address) 
                         VALUES ('${newCont.name}', '${newCont.mobile}', '${newCont.address}')`)
-        // contacts.saveContact(newCont.name, newCont.email, newCont.mobile)
         res.redirect('/customer');
+    }
+}
+
+//Fungsi untuk mengupdate data customer yang dipilih
+const updateCustomer = async (req, res) => {
+    const errors = validationResult(req);
+    //Variabel untuk menyimpan sebuah object dari data Customer yang dipilih berdasarkan id
+    const cst = await checkDataId(req.params.id)
+    // console.log(errors)
+    if (!errors.isEmpty()) {
+        res.render('edit-customer', {
+            title: "Add Customer Data Form",
+            errors: errors.array(),
+            cst,
+        });
+    } else {
+        //Object untuk menampung value dari form inputan yang diterima
+        const {name, mobile, address} = req.body
+        //Variabel untuk menampung parameter id dari url
+        const paramsCst = req.params.id
+        //Kueri untuk menambahkan input tambah data contact ke database
+        await pool.query(`UPDATE customer SET 
+                            name = '${name}', 
+                            mobile = '${mobile}', 
+                            address = '${address}'
+                            WHERE id = '${paramsCst}'`)
+        req.flash('msg', 'Customer Data has been successfully updated!')
+        res.redirect('/customer')
     }
 }
 
@@ -59,20 +86,33 @@ const detailCustomer = async (req, res) => {
 //Fungsi untuk menghapus data yang dipilih dari database
 const deleteCustomer = async (req, res) => {
     //Kueri untuk melakukan pengecekan apakah data yang dimasukan pada url ditemukan atau tidak
-    const query = await pool.query(`SELECT * FROM customer WHERE id = '${req.params.id}'`)
-    const cont = query.rows[0];
+    const cst = await checkDataId(req.params.id)
     //Pengkondisian apabila data yang dipilih tidak ditemukan atau kosong
-    if (!cont) {
-        req.flash('msg', 'Contact Data cannot be delete, data is not found!')
+    if (!cst) {
+        req.flash('msg', 'Customer Data cannot be delete, data is not found!')
     } else {
         //Kueri menghapus data contact yang dipilih
         pool.query(`DELETE FROM customer WHERE id = '${req.params.id}'`)
-        req.flash('msg', 'Contact Data has been successfully deleted!')
+        req.flash('msg', 'Customer Data has been successfully deleted!')
     }
     res.redirect('/customer')
 }
 
-
+//Fungsi untuk mengupdate data yang dipilih
+const editCstPage = async (req, res) => {
+    //Variabel untuk menyimpan sebuah object dari data contact yang dipilih
+    const cst = await checkDataId(req.params.id)
+    res.render('edit-customer', {title: 'Edit Customer Page', cst})
+}
 
 //Export module dari contact.js
-module.exports = { checkData, loadCustomer, addCustomer, detailCustomer, deleteCustomer };
+module.exports = { 
+    checkData, 
+    checkDataId, 
+    loadCustomer, 
+    addCustomer, 
+    updateCustomer, 
+    editCstPage, 
+    detailCustomer, 
+    deleteCustomer,
+};
