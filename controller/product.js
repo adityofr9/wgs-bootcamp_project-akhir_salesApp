@@ -11,10 +11,44 @@ const checkDataId = async (value) => {
 }
 
 //Fungsi untuk mengecek data kode product tertinggi berdasarkan kategori produknya
-const checkMaxCode = async (value) => {
+const newCodeProduct = async (value) => {
+    //Statement switch untuk menghasilkan inisial kode produk
+    //Berdasarkan kategori produknya
+    let initCode
+    switch (value) {
+        case "Beras Putih":
+            //Inisial kode untuk kategori produk Beras Putih
+            initCode = 'BPU'
+            break; 
+        case "Beras Merah":
+            //Inisial kode untuk kategori produk Beras Merah
+            initCode = 'BME'
+            break;
+        case "Beras Ketan":
+            //Inisial kode untuk kategori produk Beras Ketan
+            initCode = 'BKE'
+            break;
+        case "Beras Hitam":
+            //Inisial kode untuk kategori produk Beras Hitam
+            initCode = 'BHI'
+            break;
+    }
+    //Query untuk mencari nilai kode produk tertinggi berdarasarkan katgori dari database
     const query = await pool.query(`SELECT max(code_product) FROM product WHERE category = '${value}'`)
+    //Variabel untuk menyimpan objek/nilai max dari kueri
     const cd = query.rows[0];
-    return cd;
+    if (cd.max) {
+        //Mengambil 3 angka/karakter dari belakang
+        let tmpNumber = cd.max.slice(-3)
+        //Mengubah string value tmpNumber menjadi integer lalu ditambahkan 1
+        let newNumber = parseInt(tmpNumber) + 1
+        //Variable untuk menampung kode produk yang baru
+        newCode = initCode + newNumber.toString().padStart(3, '0')
+    } else {
+        //Nilai default jika nilai kode produk tertinggi tidak ada/null
+        newCode = `${initCode}001`
+    }
+    return newCode;
 }
 
 //Fungsi untuk memuat semua data pada tabel product dari database
@@ -39,70 +73,30 @@ const addProduct = async (req, res) => {
             tempParams: req.body,
         });
     } else {
+        //Variabel untuk menampung semua input dari form
         const newCont = req.body
-        //Variabel untuk kode produk baru
-        let newCode
-        //Pengkondisian untuk menghasilkan kode-product penambahan otomatis
-        //Berdasarkan kategori produknya
-        if (req.body.category == 'Beras Putih') {
-            //Kode produk tertinggi ditampung pada variabel cd
-            let cd = await checkMaxCode(req.body.category)
-            if (cd) {
-                //Mengambil 3 angka/karakter dari belakang
-                let tmpNumber = cd.max.slice(-3)
-                //Mengubah string value tmpNumber menjadi integer lalu ditambahkan 1
-                let newNumber = parseInt(tmpNumber) + 1
-                //Variable untuk menampung kode produk yang baru
-                newCode = 'BPU' + newNumber.toString().padStart(3, '0')
-            } else {
-                newCode = 'BPU001'
-            }
-        } else if (req.body.category == 'Beras Merah') {
-            let cd = await checkMaxCode(req.body.category)
-            if (cd) {
-                let tmpNumber = cd.max.slice(-3)
-                let newNumber = parseInt(tmpNumber) + 1
-                newCode = 'BME' + newNumber.toString().padStart(3, '0')
-            } else {
-                newCode = 'BME001'
-            }
-        } else if (req.body.category == 'Beras Ketan') {
-            let cd = await checkMaxCode(req.body.category)
-            if (cd) {
-                let tmpNumber = cd.max.slice(-3)
-                let newNumber = parseInt(tmpNumber) + 1
-                newCode = 'BKE' + newNumber.toString().padStart(3, '0')
-            } else {
-                newCode = 'BKE001'
-            }
-        } else {
-            let cd = await checkMaxCode(req.body.category)
-            if (cd) {
-                let tmpNumber = cd.max.slice(-3)
-                let newNumber = parseInt(tmpNumber) + 1
-                newCode = 'BHI' + newNumber.toString().padStart(3, '0')
-            } else {
-                newCode = 'BHI001'
-            }
-        }
         //Variabel untuk menyimpan nama file image yang diupload
         const img = req.files[0].filename
+        //Deklarasi variable untuk kode produk baru
+        let newCode
+        //Memanggil fungsi newCodeProduct lalu disimpan di variabel newCode
+        newCode = await newCodeProduct(req.body.category)
         //Pesan flash untuk data berhasil ditambahkan
         req.flash('msg', 'Product Data has been successfully saved!')
         //Kueri untuk menambahkan input tambah data contact ke database
         await pool.query(`INSERT INTO product (
-                            code_product, name_product, 
-                            price_unit, price_sack, 
-                            stock, category, 
-                            added_date, img_product)
-                            VALUES ('${newCode}',
-                            '${newCont.name_product}',
-                            '${newCont.price_unit}',
-                            '${newCont.price_sack}',
-                            '${newCont.stock}',
-                            '${newCont.category}',
-                            '${newCont.added_date}',
-                            '${img}')`)
+            code_product, name_product, 
+            price_unit, price_sack, 
+            stock, category, 
+            added_date, img_product)
+            VALUES ('${newCode}',
+            '${newCont.name_product}',
+            '${newCont.price_unit}',
+            '${newCont.price_sack}',
+            '${newCont.stock}',
+            '${newCont.category}',
+            '${newCont.added_date}',
+            '${img}')`)
         res.redirect('/product');
     }
 }
