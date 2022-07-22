@@ -42,7 +42,7 @@
                             <td><%= customer.address %></td>
                             <td>
                                 <a href="/customer/<%= customer.id%>" class="badge rounded-pill btn-success p-2">Detail</a>
-                                <a href="/delete/<%= customer.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= customer.name%> from data?')">Delete</a>
+                                <a href="/customer/delete/<%= customer.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= customer.name%> from data?')">Delete</a>
                             </td>
                         </tr>
                     <% }) %>

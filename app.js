@@ -76,24 +76,22 @@ app.get('/customer/add', (req, res, next) => {
 })
 
 //Route untuk menerima data input dari form Tambah Customer
-app.post('/customer', [
-    // body('name').custom(customer.checkData),
-    check('mobile', 'Mobile Phone is invalid!').isMobilePhone('id-ID')],
+app.post('/customer', [check('mobile', 'Mobile Phone is invalid!').isMobilePhone('id-ID')],
     customer.addCustomer)
 
-//Route list ketika tombol detail ditekan pada sebuah baris data contact di halaman contact.ejs
+//Route list ketika tombol detail ditekan pada sebuah baris data customer di halaman customer.ejs
 app.get('/customer/:id', customer.detailCustomer)
 
-//Route list ketika tombol edit ditekan pada halaman detail data contact
+//Route list ketika tombol edit ditekan pada halaman detail data customer
 app.get('/customer/edit/:id', customer.editCstPage)
 
-//Menerima data input dari form Edit data contact
+//Menerima data input dari form Edit data customer
 app.post('/edit/:id', [
     check('mobile', 'Mobile Phone is invalid!').isMobilePhone('id-ID')],
     customer.updateCustomer)
 
-//Route list ketika tombol delete ditekan pada sebuah baris data contact di halaman customer.ejs
-app.get('/delete/:id', customer.deleteCustomer);
+//Route list ketika tombol delete ditekan pada sebuah baris data customer di halaman customer.ejs
+app.get('/customer/delete/:id', customer.deleteCustomer);
 
 
 
@@ -120,9 +118,14 @@ app.get('/product/add', (req, res, next) => {
 })
 
 //Route untuk menerima data input dari form Tambah Customer
-app.post('/product', upload.array('img_product', 1),
-    product.addProduct)
+app.post('/product', upload.array('img_product', 1), product.addProduct)
+// [body('code_product').custom(product.checkData)], 
 
+//Route list ketika tombol detail ditekan pada sebuah baris data product di halaman product.ejs
+app.get('/product/:id', product.detailProduct)
+
+//Route list ketika tombol delete ditekan pada sebuah baris data product di halaman product.ejs
+// app.get('/customer/delete/:id', product.deleteProduct);
 
 
 //Jika url dimasukkan selain routes list yang tersedia

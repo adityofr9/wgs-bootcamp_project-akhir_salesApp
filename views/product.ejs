@@ -1,4 +1,5 @@
-<div class="container">
+<% let rupiah = Intl.NumberFormat('id-ID') %> 
+<div class="container-xxl">
     <div class="p-5" style="margin-top: 50px;">
         <h1>Hello, <%= nama %></h1>
         <p>This is product list page</p>
@@ -12,7 +13,7 @@
                 <%= msg %> 
             </div>
         <% } %>
-        <table class="table mt-3">
+        <table class="table mt-3 col-xl">
             <thead class="table-dark">
                 <tr>
                     <th scope="col">No</th>
@@ -45,10 +46,12 @@
                             <td><%= product.code_product %></td>
                             <td><%= product.name_product %></td>
                             <td><%= product.category %></td>
-                            <td>Rp. <%= product.price_unit %></td>
-                            <td>Rp. <%= product.price_sack %></td>
+                            <td>Rp. <%= rupiah.format(product.price_unit) %></td>
+                            <td>Rp. <%= rupiah.format(product.price_sack) %></td>
                             <td><%= product.stock %> Kg</td>
-                            <td><%= product.added_date %></td>
+                            <!-- variabel untuk menyimpan format tanggal -->
+                            <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; %> 
+                            <td><%= product.added_date.toLocaleDateString('id-ID', options) %></td>
                             <td><img src="../img/<%= product.img_product %>" width="125"><%#= product.added_date %></td>
                             <td>
                                 <a href="/product/<%= product.id%>" class="badge rounded-pill btn-success p-2">Detail</a>

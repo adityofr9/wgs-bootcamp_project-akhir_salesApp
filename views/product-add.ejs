@@ -21,10 +21,10 @@
         <% } %> 
 
         <form method="post" action="/product" class="col-6" enctype="multipart/form-data">
-            <div class="mb-3">
+            <!-- <div class="mb-3">
                 <label for="inputCodePdt" class="form-label">Code Product</label>
-                <input type="text" class="form-control" id="inputCodePdt" name="code_product" value="<%= tempValue?.code_product %>" required>
-            </div>
+                <input type="text" class="form-control" id="inputCodePdt" name="code_product" value="<%#= tempValue?.code_product %>">
+            </div> -->
             <div class="mb-3">
                 <label for="inputNamePdt" class="form-label">Name Product</label>
                 <input type="text" class="form-control" id="inputNamePdt" name="name_product" value="<%= tempValue?.name_product %>" required>
@@ -36,6 +36,7 @@
                     <option value="Beras Putih">Beras Putih</option>
                     <option value="Beras Merah">Beras Merah</option>
                     <option value="Beras Ketan">Beras Ketan</option>
+                    <option value="Beras Hitam">Beras Hitam</option>
                 </select>
             </div>
             <div class="form-row mb-3">
@@ -54,28 +55,18 @@
                     </div>
                 </div>
             </div>
-            <!-- <label for="inputPriceKg" class="form-label">Price per Kg</label>
-            <div class="input-group mb-3">
-                <span class="input-group-text form-control col-1">Rp.</span>
-                <input type="number" class="form-control" id="inputPriceKg" name="price_unit" value="<%= tempValue?.price_unit %>" required>
-            </div>
-            <label for="inputPriceSack" class="form-label">Price per Sack</label>
-            <div class="input-group mb-3">
-                <span class="input-group-text form-control col-1">Rp.</span>
-                <input type="number" class="form-control" id="inputPriceSack" name="price_sack" value="<%= tempValue?.price_unit %>" required>
-            </div> -->
             <label for="inputStock" class="form-label">Stock</label>
             <div class="input-group mb-3">
                 <input type="number" class="form-control" id="inputStock" name="stock" value="<%= tempValue?.stock %>" required>
                 <span class="input-group-text form-control col-1">Kg</span>
             </div>
-            <!-- <div class="mb-3">
+            <div class="mb-3">
                 <label for="inputAddDate" class="form-label">Added Date</label>
-                <input type="date" class="form-control" id="inputAddDate" value="<%#= tempValue?.added_date %>">
-            </div> -->
+                <input type="date" class="form-control" id="inputAddDate" name="added_date" min="2020-01-01" required>
+            </div>
             <div class="input-group mb-4">
                 <label for="inputImagePdt" class="form-label">Image Product</label>
-                <input type="file" class="form-control-file" id="inputImagePdt" name="img_product">
+                <input type="file" class="form-control-file" id="inputImagePdt" name="img_product" required>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>

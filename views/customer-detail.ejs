@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col">
             <h1>Detail Customer</h1>
-            <!-- Pengkondisian apabila data Contact tidak ditemukan -->
+            <!-- Pengkondisian apabila data Customer tidak ditemukan -->
             <% if (!cst) { %>
               <div class="alert alert-danger" role="alert">
                 Customer Data is not found! <br>
@@ -16,7 +16,7 @@
                   <p class="card-text"><%= cst.address %></p>
                   <br>
                   <a href="/customer/edit/<%= cst.id%>" class="badge rounded-pill btn-primary p-2">Edit</a>
-                  <a href="/delete/<%= cst.id%>" class="badge rounded-pill btn-danger p-2">Delete</a>
+                  <a href="/customer/delete/<%= cst.id%>" class="badge rounded-pill btn-danger p-2">Delete</a>
                   <br>
                   <a href="/customer" class="card-link">Back to customer list page</a>
                   </div>

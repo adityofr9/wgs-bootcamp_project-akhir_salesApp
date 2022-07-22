@@ -2,13 +2,6 @@
 const pool = require("../models/db")
 const { validationResult } = require('express-validator');
 
-//Fungsi untuk mengecek data yang dipilih berdasarkan nama ada atau tidak di dalam database
-const checkData = async (value) => {
-    const query = await pool.query(`SELECT * FROM customer WHERE name = '${value}'`)
-    const cst = query.rows[0];
-    return cst;
-}
-
 //Fungsi untuk mengecek data yang dipilih berdasarkan id ada atau tidak di dalam database
 const checkDataId = async (value) => {
     const query = await pool.query(`SELECT * FROM customer WHERE id = '${value}'`)
@@ -107,7 +100,6 @@ const editCstPage = async (req, res) => {
 
 //Export module yang ada di dalam customer.js ini
 module.exports = { 
-    checkData, 
     checkDataId, 
     loadCustomer, 
     addCustomer, 
