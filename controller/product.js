@@ -77,7 +77,7 @@ const loadProduct = async (req, res) => {
 
 //Fungsi untuk menambahkan data customer ke dalam database
 const addProduct = async (req, res) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         res.render('product-add', {
             title: "Add Product Form",
@@ -89,13 +89,15 @@ const addProduct = async (req, res) => {
         const newCont = req.body
         //Variabel untuk menyimpan nama file image yang diupload
         const img = req.files[0].filename
+        // const img2 = req.files[0]
+        // console.log(img2);
         //Deklarasi variable untuk kode produk baru
         let newCode
         //Fungsi untuk mengubah urutan Id data melalui kueri
         await resetIdSeq()
         //Memanggil fungsi newCodeProduct lalu disimpan di variabel newCode
         newCode = await newCodeProduct(req.body.category)
-        console.log(`Final code ${newCode}`)
+        // console.log(`Final code ${newCode}`)
         //Kueri untuk menambahkan input tambah data contact ke database
         await pool.query(`INSERT INTO product (
             code_product, name_product, 
@@ -143,7 +145,6 @@ const deleteProduct = async (req, res) => {
 const editPdtPage = async (req, res) => {
     //Variabel untuk menyimpan sebuah object dari data product yang dipilih
     const pdt = await checkDataId(req.params.id)
-    console.log(pdt.added_date)
     res.render('product-edit', {title: 'Edit Product Page', pdt})
 }
 
@@ -161,19 +162,50 @@ const updateProduct = async (req, res) => {
             pdt,
         });
     } else {
-        console.log(req.body);
+        // console.log(req.body);
         //Object untuk menampung value dari form inputan yang diterima
         const { name_product, price_unit, price_sack, stock, added_date} = req.body
         //Variabel untuk menampung parameter id dari url
         const paramsPdt = req.params.id
-        //Kueri untuk menambahkan input tambah data product ke database
-        await pool.query(`UPDATE product SET 
+        //Variabel untuk menyimpan nama file image yang diupload
+        // TESSSS
+        let img
+        if (!req.files[0]) {
+            img = ''
+            await pool.query(`UPDATE product SET 
                             name_product = '${name_product}', 
                             price_unit = '${price_unit}', 
                             price_sack = '${price_sack}',
                             stock = '${stock}',
                             added_date = '${added_date}'
                             WHERE id = '${paramsPdt}'`)
+        } else {
+            //Variabel untuk menyimpan nama file image yang diupload
+            fs.unlinkSync(`./public/img/${pdt.img_product}`)
+            img = req.files[0].filename
+            img2 = req.files[0]
+            console.log(img2);
+            await pool.query(`UPDATE product SET 
+                                name_product = '${name_product}', 
+                                price_unit = '${price_unit}', 
+                                price_sack = '${price_sack}',
+                                stock = '${stock}',
+                                added_date = '${added_date}',
+                                img_product = '${img}'
+                                WHERE id = '${paramsPdt}'`)
+        }
+        //Pengkondisian apabila ada input file image baru
+        // if (pdt.img_product !== img) {
+            
+        // }
+        //Kueri untuk menambahkan input tambah data product ke database
+        // await pool.query(`UPDATE product SET 
+        //                     name_product = '${name_product}', 
+        //                     price_unit = '${price_unit}', 
+        //                     price_sack = '${price_sack}',
+        //                     stock = '${stock}',
+        //                     added_date = '${added_date}'
+        //                     WHERE id = '${paramsPdt}'`)
         req.flash('msg', 'Product Data has been successfully updated!')
         res.redirect('/product')
     }

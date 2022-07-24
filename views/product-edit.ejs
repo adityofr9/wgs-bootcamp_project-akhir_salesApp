@@ -20,7 +20,7 @@
                     </ul>
                 </div>
             <% } %>
-            <form method="post" action="/product/edit/<%= pdt.id %>" class="col-6">
+            <form method="post" action="/product/edit/<%= pdt.id %>" class="col-6" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="inputCodePdt" class="form-label">Code Product</label>
                     <input type="text" class="form-control" id="inputCodePdt" name="code_product" value="<%= pdt.code_product %>" disabled>
@@ -66,12 +66,12 @@
                     <% var cvtDate = new Date(pdt.added_date - pdt.added_date.getTimezoneOffset()*60*1000); %> 
                     <!-- Variabel untuk menyimpan value added_date yang sudah ada di database -->
                     <% date = cvtDate.toJSON().slice(0, 10) %>
-                    <% console.log(`di detail ${date}`) %>
                     <input type="date" class="form-control" id="inputAddDate" name="added_date" min="2020-01-01" value="<%= date %>" required>
                 </div>
                 <div class="input-group mb-4">
                     <label for="inputImagePdt" class="form-label">Image Product</label>
-                    <input type="file" class="form-control-file" id="inputImagePdt" name="img_product" disabled>
+                    <input type="file" class="form-control-file" id="inputImagePdt" name="img_product">
+                    <p class="fs-6 mt-1">*Abaikan jika gambar tidak ingin dirubah</p>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>

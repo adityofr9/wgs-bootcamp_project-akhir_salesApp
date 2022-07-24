@@ -49,6 +49,18 @@ app.use(flash());
 //Morgan dev
 app.use(morgan('dev'))
 
+//Multer untuk input image
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/img')
+    },
+    filename: function (req, file, cb) {
+        cb(null, `product-${Date.now()}` + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({ storage: storage })
+
 
 //Route untuk halaman utama
 app.get('/', (req, res) => {
@@ -99,19 +111,6 @@ app.get('/customer/delete/:id', customer.deleteCustomer);
 //Route untuk halaman product list
 app.get('/product', product.loadProduct)
 
-// MULTERRR
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './public/img')
-    },
-    filename: function (req, file, cb) {
-        console.log();
-        cb(null, `product-${Date.now()}` + path.extname(file.originalname))
-    }
-})
-
-const upload = multer({ storage: storage })
-
 //Route list tambah data Customer
 app.get('/product/add', (req, res, next) => {
     res.render('product-add', {title: 'Add Product Page'})
@@ -128,7 +127,7 @@ app.get('/product/:id', product.detailProduct)
 app.get('/product/edit/:id', product.editPdtPage)
 
 //Menerima data input dari form Edit data product
-app.post('/product/edit/:id', product.updateProduct)
+app.post('/product/edit/:id', upload.array('img_product', 1), product.updateProduct)
 
 //Route list ketika tombol delete ditekan pada sebuah baris data product di halaman product.ejs
 app.get('/product/delete/:id', product.deleteProduct);
