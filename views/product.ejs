@@ -32,8 +32,8 @@
                 <!-- Pengkondisian apabila data kosong -->
                 <% if (pdt.length < 1) { %>
                     <tr>
-                        <th scope="col" colspan="4">
-                            <div class="alert alert-danger mt-3" role="alert">
+                        <th scope="col" colspan="10">
+                            <div class="alert alert-danger mt-3 text-center" role="alert">
                                 <b>Products data is empty!</b>
                             </div>
                         </th>
@@ -55,7 +55,7 @@
                             <td><img src="../img/<%= product.img_product %>" width="125"><%#= product.added_date %></td>
                             <td>
                                 <a href="/product/<%= product.id%>" class="badge rounded-pill btn-success p-2">Detail</a>
-                                <a href="/delete/<%= product.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= product.code_product%> - <%= product.name%> from data?')">Delete</a>
+                                <a href="/product/delete/<%= product.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= product.code_product%> - <%= product.name%> from data?')">Delete</a>
                             </td>
                         </tr>
                     <% }) %>

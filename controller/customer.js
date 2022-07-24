@@ -34,7 +34,7 @@ const addCustomer = async (req, res) => {
         const newCont = req.body;
         //Pesan flash untuk data berhasil ditambahkan
         req.flash('msg', 'Customer Data has been successfully saved!')
-        //Kueri untuk menambahkan input tambah data contact ke database
+        //Kueri untuk menambahkan input tambah data customer ke database
         await pool.query(`INSERT INTO customer (name, mobile, address) 
                         VALUES ('${newCont.name}', '${newCont.mobile}', '${newCont.address}')`)
         res.redirect('/customer');
@@ -58,7 +58,7 @@ const updateCustomer = async (req, res) => {
         const {name, mobile, address} = req.body
         //Variabel untuk menampung parameter id dari url
         const paramsCst = req.params.id
-        //Kueri untuk menambahkan input tambah data contact ke database
+        //Kueri untuk menambahkan input tambah data customer ke database
         await pool.query(`UPDATE customer SET 
                             name = '${name}', 
                             mobile = '${mobile}', 
@@ -84,7 +84,7 @@ const deleteCustomer = async (req, res) => {
     if (!cst) {
         req.flash('msg', 'Customer Data cannot be delete, data is not found!')
     } else {
-        //Kueri menghapus data contact yang dipilih
+        //Kueri menghapus data customer yang dipilih
         pool.query(`DELETE FROM customer WHERE id = '${req.params.id}'`)
         req.flash('msg', 'Customer Data has been successfully deleted!')
     }
@@ -93,7 +93,7 @@ const deleteCustomer = async (req, res) => {
 
 //Fungsi untuk mengupdate data yang dipilih
 const editCstPage = async (req, res) => {
-    //Variabel untuk menyimpan sebuah object dari data contact yang dipilih
+    //Variabel untuk menyimpan sebuah object dari data customer yang dipilih
     const cst = await checkDataId(req.params.id)
     res.render('customer-edit', {title: 'Edit Customer Page', cst})
 }

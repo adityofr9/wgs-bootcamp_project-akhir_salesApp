@@ -1,0 +1,80 @@
+<div class="container">
+    <div class="p-5" style="margin-top: 50px;">
+        <h1>Edit Product</h1>
+        <p>This is edit product form</p>
+        <hr>
+        <% if (!pdt) { %>
+            <div class="alert alert-danger" role="alert">
+                Product Data is not found! <br>
+                <a href="/product" class="card-link">Back to product list page</a>
+            </div>
+        <% } else { %>
+            <br>
+            <!-- Pengkondisian apabila terdapat error untuk memunculkan pesan alert -->
+            <% if (typeof errors != 'undefined') { %>
+                <div class="alert alert-danger" role="alert">
+                    <ul>
+                        <% errors.forEach(error => { %>
+                        <li><%= error.msg %> </li>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+            <form method="post" action="/product/edit/<%= pdt.id %>" class="col-6">
+                <div class="mb-3">
+                    <label for="inputCodePdt" class="form-label">Code Product</label>
+                    <input type="text" class="form-control" id="inputCodePdt" name="code_product" value="<%= pdt.code_product %>" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="inputNamePdt" class="form-label">Name Product</label>
+                    <input type="text" class="form-control" id="inputNamePdt" name="name_product" value="<%= pdt.name_product %>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="inputCategoryPdt" class="form-label">Category Product</label>
+                    <select class="form-control" id="inputCategoryPdt" name="category" aria-label="Default select example" disabled>
+                        <option value="<%= pdt.category %>" selected><%= pdt.category %></option>
+                        <!-- <option value="Beras Putih">Beras Putih</option>
+                        <option value="Beras Merah">Beras Merah</option>
+                        <option value="Beras Ketan">Beras Ketan</option>
+                        <option value="Beras Hitam">Beras Hitam</option> -->
+                    </select>
+                </div>
+                <div class="form-row mb-3">
+                    <div class="input-group col">
+                        <label for="inputPriceKg" class="form-label">Price per Kg</label>
+                        <div class="input-group">
+                            <span class="input-group-text form-control col-3">Rp.</span>
+                            <input type="number" class="form-control" id="inputPriceKg" name="price_unit" value="<%= pdt.price_unit %>" required>
+                        </div>
+                    </div>
+                    <div class="input-group col">
+                        <label for="inputPriceSack" class="form-label">Price per Sack</label>
+                        <div class="input-group">
+                            <span class="input-group-text form-control col-3">Rp.</span>
+                            <input type="number" class="form-control" id="inputPriceSack" name="price_sack" value="<%= pdt.price_unit %>" required>
+                        </div>
+                    </div>
+                </div>
+                <label for="inputStock" class="form-label">Stock</label>
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" id="inputStock" name="stock" value="<%= pdt.stock %>" required>
+                    <span class="input-group-text form-control col-1">Kg</span>
+                </div>
+                <div class="mb-3">
+                    <label for="inputAddDate" class="form-label">Added Date</label>
+                    <!-- Mengkonveris format tanggal UTC menjadi format tanggal lokal -->
+                    <% var cvtDate = new Date(pdt.added_date - pdt.added_date.getTimezoneOffset()*60*1000); %> 
+                    <!-- Variabel untuk menyimpan value added_date yang sudah ada di database -->
+                    <% date = cvtDate.toJSON().slice(0, 10) %>
+                    <% console.log(`di detail ${date}`) %>
+                    <input type="date" class="form-control" id="inputAddDate" name="added_date" min="2020-01-01" value="<%= date %>" required>
+                </div>
+                <div class="input-group mb-4">
+                    <label for="inputImagePdt" class="form-label">Image Product</label>
+                    <input type="file" class="form-control-file" id="inputImagePdt" name="img_product" disabled>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        <% } %>
+    </div>
+</div>

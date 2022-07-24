@@ -86,7 +86,7 @@ app.get('/customer/:id', customer.detailCustomer)
 app.get('/customer/edit/:id', customer.editCstPage)
 
 //Menerima data input dari form Edit data customer
-app.post('/edit/:id', [
+app.post('/customer/edit/:id', [
     check('mobile', 'Mobile Phone is invalid!').isMobilePhone('id-ID')],
     customer.updateCustomer)
 
@@ -106,7 +106,7 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         console.log();
-        cb(null, `image-${Date.now()}` + path.extname(file.originalname))
+        cb(null, `product-${Date.now()}` + path.extname(file.originalname))
     }
 })
 
@@ -124,8 +124,14 @@ app.post('/product', upload.array('img_product', 1), product.addProduct)
 //Route list ketika tombol detail ditekan pada sebuah baris data product di halaman product.ejs
 app.get('/product/:id', product.detailProduct)
 
+//Route list ketika tombol edit ditekan pada halaman detail data product
+app.get('/product/edit/:id', product.editPdtPage)
+
+//Menerima data input dari form Edit data product
+app.post('/product/edit/:id', product.updateProduct)
+
 //Route list ketika tombol delete ditekan pada sebuah baris data product di halaman product.ejs
-// app.get('/customer/delete/:id', product.deleteProduct);
+app.get('/product/delete/:id', product.deleteProduct);
 
 
 //Jika url dimasukkan selain routes list yang tersedia

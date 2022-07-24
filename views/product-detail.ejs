@@ -19,11 +19,11 @@
                     <br>Price per Sack: Rp. <%= rupiah.format(pdt.price_sack) %>
                     <br>Stock: <%= pdt.price_unit %> Kg
                   </p>
-                  <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; %> 
+                  <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; %>
                   <p class="card-text">Added Date: <%= pdt.added_date.toLocaleDateString('id-ID', options) %></p>
                   <br>
                   <a href="/product/edit/<%= pdt.id %>" class="badge rounded-pill btn-primary p-2">Edit</a>
-                  <a href="/delete/<%= pdt.id %>" class="badge rounded-pill btn-danger p-2">Delete</a>
+                  <a href="/product/delete/<%= pdt.id %>" class="badge rounded-pill btn-danger p-2">Delete</a>
                   <br>
                   <a href="/product" class="card-link">Back to product list page</a>
                   </div>
