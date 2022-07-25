@@ -5,6 +5,9 @@ const app = express()
 var expressLayouts = require('express-ejs-layouts');
 //3rd party Middleware Morgan
 var morgan = require('morgan')
+//Module Bcrypt
+const bcrypt = require('bcrypt')
+//Module untuk menyimpan session user di browser
 
 //Module dari controller
 const customer = require('./controller/customer.js');
@@ -30,7 +33,7 @@ app.use(express.json()) // => req.body
 
 //Information using EJS
 app.set('view engine', 'ejs');
-app.set('layout', 'layout/layout');
+app.set('layout', 'layout/layout', 'layout/login-layout');
 app.use(expressLayouts);
 app.use(express.static('public'))
 app.use(express.urlencoded({extended: true}))
@@ -131,6 +134,61 @@ app.post('/product/edit/:id', upload.array('img_product', 1), product.updateProd
 
 //Route list ketika tombol delete ditekan pada sebuah baris data product di halaman product.ejs
 app.get('/product/delete/:id', product.deleteProduct);
+
+
+//Login
+app.get('/login', async (req, res) => {
+    res.render('login', {nama: "Muhammad Adityo Fathur Rahim",
+    title: 'Login Page', layout: 'layout/login-layout'})
+})
+
+//Tambah User
+app.get('/users/add', (req, res) => {
+    res.render('user-add', {nama: "Muhammad Adityo Fathur Rahim",
+    title: 'Add User Page', 
+    success_msg: req.flash('success_msg'),
+    warning_msg: req.flash('warning_msg')
+    })
+})
+
+app.post('/users/add', [
+    body('password2').custom(async (value, {req}) => {
+        if (value !== req.body.password) {
+            throw new Error('Password do not match');
+        }
+        return true;
+    }),
+    check('email', 'Email is invalid!').isEmail()],
+async (req, res) => {
+    let { name, email, password, password2 } = req.body
+    const role = "admin"
+    // console.log({ name, email, password, password2 });
+    const errors = validationResult(req);
+    // console.log(errors);
+    if (!errors.isEmpty()) {
+        res.render('user-add', {nama: "Muhammad Adityo Fathur Rahim",
+        title: 'Add User Page', errors: errors.array(), tempParams: req.body,
+        success_msg: req.flash('success_msg'),
+        warning_msg: req.flash('warning_msg')
+    })
+    } else {
+        let hashPass = await bcrypt.hash(password, 10)
+        //Mengecek input data email apabila terjadi duplikat pada database
+        //public."user" karena aturan dari postgres untuk tabel bernama user
+        const query = await pool.query(`SELECT * FROM public."user" WHERE email = '${email}'`)
+        const usr = query.rows[0]
+        // console.log(usr);
+        if (usr) {
+            req.flash('warning_msg', 'Email has been used!')
+            // console.log(`data email sudah ada`);
+        } else {
+            await pool.query(`INSERT INTO public."user" (name, email, password, role) 
+                        VALUES ('${name}', '${email}', '${hashPass}', '${role}')`)
+            req.flash('success_msg', 'New user has been added successfully!')
+        }
+        res.redirect('/users/add')
+    }
+})
 
 
 //Jika url dimasukkan selain routes list yang tersedia

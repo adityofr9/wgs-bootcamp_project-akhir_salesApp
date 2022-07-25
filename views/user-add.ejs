@@ -1,0 +1,55 @@
+<div class="container">
+    <div class="p-5" style="margin-top: 50px;">
+        <h1>Add User</h1>
+        <p>This is add new User form</p>
+        <hr>
+        <br>
+        <!-- Pengkondisian apabila terdapat error untuk memunculkan pesan alert -->
+        <% if (typeof errors != 'undefined') { %>
+            <div class="alert alert-danger" role="alert">
+                <ul>
+                    <% errors.forEach( error => { %>
+                     <li><%= error.msg %> </li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% } %>
+        
+        <% if (success_msg.length !== 0) { %>
+            <div class="alert alert-success mt-3" role="alert">
+                <%= success_msg %> 
+            </div>
+        <% }  %>    
+        <% if (warning_msg.length !== 0) { %>    
+            <div class="alert alert-warning mt-3" role="alert">
+                <%= warning_msg %> 
+            </div>
+        <% } %>
+        
+
+        <!-- Pengkondisian apabila value sementara sudah terisi -->
+        <% let tempValue %>
+        <% if (locals.tempParams) { tempValue = tempParams %>
+        <% } %> 
+
+        <form method="post" action="/users/add" class="col-6" enctype="application/x-www-form-urlencoded">
+            <div class="mb-3">
+                <label for="inputName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="inputName" name="name" value="<%= tempValue?.name %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="inputEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="inputEmail" name="email" value="<%= tempValue?.email %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="inputPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="inputPassword" name="password" minlength="6" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" name="password2" minlength="6" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>

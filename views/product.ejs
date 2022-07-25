@@ -52,7 +52,7 @@
                             <!-- variabel untuk menyimpan format tanggal -->
                             <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; %> 
                             <td><%= product.added_date.toLocaleDateString('id-ID', options) %></td>
-                            <td><img src="../img/<%= product.img_product %>" width="125"><%#= product.added_date %></td>
+                            <td><img src="../img/<%= product.img_product %>" width="70"><%#= product.added_date %></td>
                             <td>
                                 <a href="/product/<%= product.id%>" class="badge rounded-pill btn-success p-2">Detail</a>
                                 <a href="/product/delete/<%= product.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= product.code_product%> - <%= product.name%> from data?')">Delete</a>
