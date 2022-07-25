@@ -1,11 +1,11 @@
 <div class="container">
     <div class="p-5" style="margin-top: 50px;">
         <h1>Hello, <%= user.name %></h1>
-        <p>This is customer list page</p>
+        <p>This is users list page</p>
         <hr>
         <br>
-        <h3>Customer List</h3>
-        <a href="/customer/add" class="btn btn-primary">Add Customer</a>
+        <h3>Users List</h3>
+        <a href="/users/add" class="btn btn-primary">Add User</a>
         <!-- Pengkondisian bila terdapat pesan flash message yang ingin ditampilkan -->
         <% if (msg.length !== 0) { %>
             <div class="alert alert-warning mt-3" role="alert">
@@ -17,32 +17,34 @@
               <tr>
                 <th scope="col">No</th>
                 <th scope="col">Name</th>
-                <th scope="col">Mobile</th>
-                <th scope="col">Address</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody class="table-group-divider">
                 <!-- Pengkondisian apabila data kosong -->
-                <% if (cst.length < 1) { %>
+                <% if (usr.length < 1) { %>
                     <tr>
                         <th scope="col" colspan="4">
                             <div class="alert alert-danger mt-3" role="alert">
-                                <b>Customers data is empty!</b>
+                                <b>Users data is empty!</b>
                             </div>
                         </th>
                     </tr>
                 <% } else { %>
                     <!-- Pemanggilan isi properti dari setiap object contacts.json -->
-                    <% cst.forEach((customer, i) => { %>
+                    <% usr.forEach((userData, i) => { %>
                         <tr>
                             <th scope="row"><%= i+1  %></th>
-                            <td><%= customer.name %></td>
-                            <td><%= customer.mobile %></td>
-                            <td><%= customer.address %></td>
+                            <td><%= userData.name %></td>
+                            <td><%= userData.email %></td>
+                            <td><%= userData.role %></td>
                             <td>
-                                <a href="/customer/<%= customer.id%>" class="badge rounded-pill btn-success p-2">Detail</a>
-                                <a href="/customer/delete/<%= customer.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= customer.name%> from data?')">Delete</a>
+                                <a href="/users/<%= userData.id%>" class="badge rounded-pill btn-success p-2">Detail</a>
+                                <% if (userData.role == "admin") { %>
+                                    <a href="/users/delete/<%= userData.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= userData.name%> from data?')">Delete</a>
+                                <% } %>
                             </td>
                         </tr>
                     <% }) %>

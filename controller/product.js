@@ -72,6 +72,7 @@ const loadProduct = async (req, res) => {
         title: 'Product List Page',
         pdt,
         msg: req.flash('msg'),          //Parameter untuk menerima pesan flash message
+        user: req.user
     })
 }
 

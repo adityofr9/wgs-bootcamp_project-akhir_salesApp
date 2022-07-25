@@ -40,17 +40,19 @@ app.set('view engine', 'ejs');
 app.set('layout', 'layout/layout', 'layout/login-layout');
 app.use(expressLayouts);
 app.use(express.static('public'))
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({extended: false}))
 
 app.use(cookieParser('secret'));
 app.use(
     session({
-        cookie: {maxAge: 6000},
+        // cookie: {maxAge: 6000},
         secret: 'secret',
         resave: true,
         saveUninitialized: true,
     })
 );
+
+//Konfigurasi passport
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -73,27 +75,27 @@ const upload = multer({ storage: storage })
 
 
 //Route untuk halaman utama
-app.get('/', (req, res) => {
+app.get('/', checkNotAuthenticated, (req, res) => {
     res.render('index', 
     {
-        nama: "Muhammad Adityo Fathur Rahim",
         title: 'Aplikasi Penjualan Beras',
+        user: req.user.name
     });
 })
 
 //Route untuk halaman about
-app.get('/about', (req, res) => {
-    res.render('about', {nama: "Muhammad Adityo Fathur Rahim",
-    title: 'About Page'})
-})
+// app.get('/about', checkNotAuthenticated, (req, res) => {
+//     res.render('about', {nama: "Muhammad Adityo Fathur Rahim",
+//     title: 'About Page'})
+// })
 
 
 //ROUTE UNTUK CUSTOMER
 //Route untuk halaman customer list
-app.get('/customer', customer.loadCustomer)
+app.get('/customer', checkNotAuthenticated, customer.loadCustomer)
 
 //Route list tambah data Customer
-app.get('/customer/add', (req, res, next) => {
+app.get('/customer/add', checkNotAuthenticated, (req, res, next) => {
     res.render('customer-add', {title: 'Add Customer Page'})
 })
 
@@ -102,10 +104,10 @@ app.post('/customer', [check('mobile', 'Mobile Phone is invalid!').isMobilePhone
     customer.addCustomer)
 
 //Route list ketika tombol detail ditekan pada sebuah baris data customer di halaman customer.ejs
-app.get('/customer/:id', customer.detailCustomer)
+app.get('/customer/:id', checkNotAuthenticated, customer.detailCustomer)
 
 //Route list ketika tombol edit ditekan pada halaman detail data customer
-app.get('/customer/edit/:id', customer.editCstPage)
+app.get('/customer/edit/:id', checkNotAuthenticated, customer.editCstPage)
 
 //Menerima data input dari form Edit data customer
 app.post('/customer/edit/:id', [
@@ -113,16 +115,16 @@ app.post('/customer/edit/:id', [
     customer.updateCustomer)
 
 //Route list ketika tombol delete ditekan pada sebuah baris data customer di halaman customer.ejs
-app.get('/customer/delete/:id', customer.deleteCustomer);
+app.get('/customer/delete/:id', checkNotAuthenticated, customer.deleteCustomer);
 
 
 
 //ROUTE UNTUK PRODUCT
 //Route untuk halaman product list
-app.get('/product', product.loadProduct)
+app.get('/product', checkNotAuthenticated, product.loadProduct)
 
 //Route list tambah data Customer
-app.get('/product/add', (req, res, next) => {
+app.get('/product/add', checkNotAuthenticated, (req, res, next) => {
     res.render('product-add', {title: 'Add Product Page'})
 })
 
@@ -131,33 +133,46 @@ app.post('/product', upload.array('img_product', 1), product.addProduct)
 // [body('code_product').custom(product.checkData)], 
 
 //Route list ketika tombol detail ditekan pada sebuah baris data product di halaman product.ejs
-app.get('/product/:id', product.detailProduct)
+app.get('/product/:id', checkNotAuthenticated, product.detailProduct)
 
 //Route list ketika tombol edit ditekan pada halaman detail data product
-app.get('/product/edit/:id', product.editPdtPage)
+app.get('/product/edit/:id', checkNotAuthenticated, product.editPdtPage)
 
 //Menerima data input dari form Edit data product
 app.post('/product/edit/:id', upload.array('img_product', 1), product.updateProduct)
 
 //Route list ketika tombol delete ditekan pada sebuah baris data product di halaman product.ejs
-app.get('/product/delete/:id', product.deleteProduct);
+app.get('/product/delete/:id', checkNotAuthenticated, product.deleteProduct);
 
 
+
+//ROUTE LOGIN & SUPER ADMIN
 //Login
-app.get('/login', async (req, res) => {
-    res.render('login', {nama: "Muhammad Adityo Fathur Rahim",
-    title: 'Login Page', layout: 'layout/login-layout'})
+app.get('/login', checkAuthenticated, async (req, res) => {
+    res.render('login', {title: 'Login Page', layout: 'layout/login-layout'})
 })
 
 app.post('/login', passport.authenticate('local', {
-    successRedirect: "/customer",
+    successRedirect: "/",
     failureRedirect: "/login",
     failureFlash: true,
     successFlash: true
 }))
 
+//Halaman list user
+app.get('/users', checkNotAuthenticated, async (req, res) => {
+    const query = await pool.query('SELECT * FROM public."user" ORDER BY id ASC')
+    const usr =  query.rows;
+    res.render('user', {
+        title: 'Users List Page',
+        usr,
+        msg: req.flash('msg'),      //Parameter untuk menerima pesan flash message
+        user: req.user
+    })
+})
+
 //Tambah User
-app.get('/users/add', (req, res) => {
+app.get('/users/add', checkNotAuthenticated, (req, res) => {
     res.render('user-add', {nama: "Muhammad Adityo Fathur Rahim",
     title: 'Add User Page', 
     success_msg: req.flash('success_msg'),
@@ -165,6 +180,28 @@ app.get('/users/add', (req, res) => {
     })
 })
 
+//Route list ketika tombol detail ditekan pada sebuah baris data user di halaman user.ejs
+app.get('/users/:id', checkNotAuthenticated, async (req, res) => {
+    //Variabel untuk menyimpan sebuah object dari data User yang dipilih berdasarkan id
+    const query = await pool.query(`SELECT * FROM public."user" WHERE id = '${req.params.id}'`)
+    const usr = query.rows[0];
+    res.render('user-detail', {title: 'Detail User Page', usr})
+})
+
+//Route untuk tombol logout
+app.get("/users/logout", checkNotAuthenticated, (req, res) => {
+    req.logOut(
+        function(err) {
+            if (err) {
+                return next(err)
+            }
+            req.flash('success_msg', "You have been logged out!")
+            res.redirect('/login')
+        }
+    )
+})
+
+//Menerima input dari form tambah user
 app.post('/users/add', [
     body('password2').custom(async (value, {req}) => {
         if (value !== req.body.password) {
@@ -180,7 +217,7 @@ async (req, res) => {
     const errors = validationResult(req);
     // console.log(errors);
     if (!errors.isEmpty()) {
-        res.render('user-add', {nama: "Muhammad Adityo Fathur Rahim",
+        res.render('user-add', {
         title: 'Add User Page', errors: errors.array(), tempParams: req.body,
         success_msg: req.flash('success_msg'),
         warning_msg: req.flash('warning_msg')
@@ -204,6 +241,22 @@ async (req, res) => {
     }
 })
 
+
+//Fungsi authenticated untuk melindungi akses ke route
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect("/")
+    }
+    next()
+}
+
+//Fungsi not authenticated untuk melindungi akses ke route
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+    res.redirect("/login")
+}
 
 //Jika url dimasukkan selain routes list yang tersedia
 app.use('/', (req,res) => {

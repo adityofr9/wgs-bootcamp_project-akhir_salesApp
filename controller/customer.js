@@ -2,6 +2,8 @@
 const pool = require("../models/db")
 const { validationResult } = require('express-validator');
 
+const passport = require("passport")
+
 //Fungsi untuk mengecek data yang dipilih berdasarkan id ada atau tidak di dalam database
 const checkDataId = async (value) => {
     const query = await pool.query(`SELECT * FROM customer WHERE id = '${value}'`)
@@ -17,7 +19,8 @@ const loadCustomer = async (req, res) => {
         nama: "Muhammad Adityo Fathur Rahim",
         title: 'Customer List Page',
         cst,
-        msg: req.flash('msg'),       //Parameter untuk menerima pesan flash message
+        msg: req.flash('msg'),      //Parameter untuk menerima pesan flash message
+        user: req.user
     })
 }
 

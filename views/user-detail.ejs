@@ -1,0 +1,29 @@
+<div class="container mt-5 pt-4">
+    <div class="row">
+        <div class="col">
+            <h1>Detail User</h1>
+            <!-- Pengkondisian apabila data User tidak ditemukan -->
+            <% if (!usr) { %>
+              <div class="alert alert-danger" role="alert">
+                User Data is not found! <br>
+                <a href="/users" class="card-link">Back to Users list page</a>
+              </div>
+            <% } else { %>
+              <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Name: <%= usr.name %></h5>
+                  <h6 class="card-subtitle mb-2 text-muted">Email: <%= usr.email %></h6>
+                  <p class="card-text">Role: <%= usr.role %></p>
+                  <br>
+                  <a href="/users/edit/<%= usr.id%>" class="badge rounded-pill btn-primary p-2">Edit</a>
+                  <% if (usr.role == "admin") { %>
+                    <a href="/users/delete/<%= usr.id%>" class="badge rounded-pill btn-danger p-2">Delete</a>
+                  <% } %>
+                  <br>
+                  <a href="/users" class="card-link">Back to Users list page</a>
+                  </div>
+              </div>
+            <% } %>
+        </div>
+    </div>
+</div>
