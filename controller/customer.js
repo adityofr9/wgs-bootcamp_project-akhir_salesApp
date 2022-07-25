@@ -17,7 +17,7 @@ const loadCustomer = async (req, res) => {
         nama: "Muhammad Adityo Fathur Rahim",
         title: 'Customer List Page',
         cst,
-        msg: req.flash('msg'),          //Parameter untuk menerima pesan flash message
+        msg: req.flash('msg'),       //Parameter untuk menerima pesan flash message
     })
 }
 

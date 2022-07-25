@@ -7,7 +7,10 @@ var expressLayouts = require('express-ejs-layouts');
 var morgan = require('morgan')
 //Module Bcrypt
 const bcrypt = require('bcrypt')
-//Module untuk menyimpan session user di browser
+//Module passport
+const passport = require("passport")
+const initializePassport = require('./passportConfig')
+initializePassport(passport)
 
 //Module dari controller
 const customer = require('./controller/customer.js');
@@ -23,7 +26,8 @@ const { default: isEmail } = require('validator/lib/isEmail.js');
 //Module untuk flash message
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const flash = require('connect-flash');
+// const flash = require('connect-flash');
+const flash = require('express-flash');
 
 //Module multer untuk upload image
 const multer  = require('multer')
@@ -47,6 +51,9 @@ app.use(
         saveUninitialized: true,
     })
 );
+app.use(passport.initialize())
+app.use(passport.session())
+
 app.use(flash());
 
 //Morgan dev
@@ -141,6 +148,13 @@ app.get('/login', async (req, res) => {
     res.render('login', {nama: "Muhammad Adityo Fathur Rahim",
     title: 'Login Page', layout: 'layout/login-layout'})
 })
+
+app.post('/login', passport.authenticate('local', {
+    successRedirect: "/customer",
+    failureRedirect: "/login",
+    failureFlash: true,
+    successFlash: true
+}))
 
 //Tambah User
 app.get('/users/add', (req, res) => {

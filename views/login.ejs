@@ -7,9 +7,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
+      
       <div class="modal-body p-5 pt-0">
+        <% console.log(messages); %> 
+        <% if (messages.error) { %>
+          <div class="alert alert-warning mt-3" role="alert">
+            <%= messages.error %>
+          </div>
+        <% } %>
         <!-- FORM LOGIN -->
-        <form class="">
+        <form class="" method="post" action="/login">
           <div class="form-floating mb-3">
             <input type="email" class="form-control rounded-3" id="loginEmail" name="email" placeholder="name@example.com">
             <label for="loginEmail">Email address</label>
