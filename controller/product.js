@@ -65,6 +65,12 @@ const newCodeProduct = async (value) => {
 
 //Fungsi untuk memuat semua data pada tabel product dari database
 const loadProduct = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
     const query = await pool.query('SELECT * FROM product')
     const pdt =  query.rows;
     res.render('product', {
@@ -78,12 +84,19 @@ const loadProduct = async (req, res) => {
 
 //Fungsi untuk menambahkan data customer ke dalam database
 const addProduct = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
         res.render('product-add', {
             title: "Add Product Form",
             errors: errors.array(),
             tempParams: req.body,
+            user: req.user
         });
     } else {
         //Variabel untuk menampung semua input dari form
@@ -121,13 +134,25 @@ const addProduct = async (req, res) => {
 
 // Fungsi untuk menampilkan detail data Product
 const detailProduct = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
     //Variabel untuk menyimpan sebuah object dari data Product yang dipilih berdasarkan id
     const pdt = await checkDataId(req.params.id)
-    res.render('product-detail', {title: 'Detail Product Page', pdt})
+    res.render('product-detail', {title: 'Detail Product Page', pdt, user: req.user})
 }
 
 // Fungsi untuk menghapus data product
 const deleteProduct = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
     //Kueri untuk melakukan pengecekan apakah data yang dimasukan pada url ditemukan atau tidak
     const pdt = await checkDataId(req.params.id)
     //Pengkondisian apabila data yang dipilih tidak ditemukan atau kosong
@@ -144,13 +169,25 @@ const deleteProduct = async (req, res) => {
 
 //Fungsi untuk mengupdate data yang dipilih
 const editPdtPage = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
     //Variabel untuk menyimpan sebuah object dari data product yang dipilih
     const pdt = await checkDataId(req.params.id)
-    res.render('product-edit', {title: 'Edit Product Page', pdt})
+    res.render('product-edit', {title: 'Edit Product Page', pdt, user: req.user})
 }
 
 //Fungsi untuk mengupdate data product yang dipilih
 const updateProduct = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
     const errors = validationResult(req);
     //Variabel untuk menyimpan sebuah object dari data product yang dipilih berdasarkan id
     const pdt = await checkDataId(req.params.id)
@@ -161,6 +198,7 @@ const updateProduct = async (req, res) => {
             title: "Add Product Data Form",
             errors: errors.array(),
             pdt,
+            user: req.user
         });
     } else {
         // console.log(req.body);
@@ -169,7 +207,6 @@ const updateProduct = async (req, res) => {
         //Variabel untuk menampung parameter id dari url
         const paramsPdt = req.params.id
         //Variabel untuk menyimpan nama file image yang diupload
-        // TESSSS
         let img
         if (!req.files[0]) {
             img = ''

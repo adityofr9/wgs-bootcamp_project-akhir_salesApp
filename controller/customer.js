@@ -13,6 +13,12 @@ const checkDataId = async (value) => {
 
 //Fungsi untuk memuat semua data pada tabel customer dari database
 const loadCustomer = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
     const query = await pool.query('SELECT * FROM customer')
     const cst =  query.rows;
     res.render('customer', {
@@ -26,12 +32,19 @@ const loadCustomer = async (req, res) => {
 
 //Fungsi untuk menambahkan data customer ke dalam database
 const addCustomer = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.render('customer-add', {
             title: "Add Customer Form",
             errors: errors.array(),
             tempParams: req.body,
+            user: req.user
         });
     } else {
         const newCont = req.body;
@@ -46,6 +59,12 @@ const addCustomer = async (req, res) => {
 
 //Fungsi untuk mengupdate data customer yang dipilih
 const updateCustomer = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
     const errors = validationResult(req);
     //Variabel untuk menyimpan sebuah object dari data Customer yang dipilih berdasarkan id
     const cst = await checkDataId(req.params.id)
@@ -55,6 +74,7 @@ const updateCustomer = async (req, res) => {
             title: "Add Customer Data Form",
             errors: errors.array(),
             cst,
+            user: req.user
         });
     } else {
         //Object untuk menampung value dari form inputan yang diterima
@@ -74,13 +94,25 @@ const updateCustomer = async (req, res) => {
 
 // Fungsi untuk menampilkan detail data Customer
 const detailCustomer = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
     //Variabel untuk menyimpan sebuah object dari data Customer yang dipilih berdasarkan id
     const cst = await checkDataId(req.params.id)
-    res.render('customer-detail', {title: 'Detail Customer Page', cst})
+    res.render('customer-detail', {title: 'Detail Customer Page', cst, user: req.user})
 }
 
 //Fungsi untuk menghapus data yang dipilih dari database
 const deleteCustomer = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
     //Kueri untuk melakukan pengecekan apakah data yang dimasukan pada url ditemukan atau tidak
     const cst = await checkDataId(req.params.id)
     //Pengkondisian apabila data yang dipilih tidak ditemukan atau kosong
@@ -96,9 +128,15 @@ const deleteCustomer = async (req, res) => {
 
 //Fungsi untuk mengupdate data yang dipilih
 const editCstPage = async (req, res) => {
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+    
     //Variabel untuk menyimpan sebuah object dari data customer yang dipilih
     const cst = await checkDataId(req.params.id)
-    res.render('customer-edit', {title: 'Edit Customer Page', cst})
+    res.render('customer-edit', {title: 'Edit Customer Page', cst, user: req.user})
 }
 
 //Export module yang ada di dalam customer.js ini

@@ -79,7 +79,7 @@ app.get('/', checkNotAuthenticated, (req, res) => {
     res.render('index', 
     {
         title: 'Aplikasi Penjualan Beras',
-        user: req.user.name
+        user: req.user
     });
 })
 
@@ -96,7 +96,13 @@ app.get('/customer', checkNotAuthenticated, customer.loadCustomer)
 
 //Route list tambah data Customer
 app.get('/customer/add', checkNotAuthenticated, (req, res, next) => {
-    res.render('customer-add', {title: 'Add Customer Page'})
+    // Pengkondisian apabila user role super admin mencoba mengakses halaman user list
+    if (req.user.role == "super admin") {
+        res.redirect(`/`)
+        return
+    }
+
+    res.render('customer-add', {title: 'Add Customer Page', user: req.user})
 })
 
 //Route untuk menerima data input dari form Tambah Customer
@@ -174,11 +180,14 @@ app.get("/users/logout", (req, res) => {
 
 //Halaman list user
 app.get('/users', checkNotAuthenticated, async (req, res) => {
+    // Pengkondisian apabila user role admin mencoba mengakses halaman user list
+    if (req.user.role == "admin") {
+        res.redirect(`/`)
+        return
+    }
+
     const query = await pool.query('SELECT * FROM public."user" ORDER BY id ASC')
     const usr =  query.rows;
-    if (req.user.role == "admin") {
-        res.redirect(`/users/${req.user.id}`)
-    }
     res.render('user', {
         title: 'Users List Page',
         usr, 
@@ -190,10 +199,17 @@ app.get('/users', checkNotAuthenticated, async (req, res) => {
 
 //Tambah User
 app.get('/users/add', checkNotAuthenticated, (req, res) => {
+    // Pengkondisian apabila user role admin mencoba mengakses halaman user list
+    if (req.user.role == "admin") {
+        res.redirect(`/`)
+        return
+    }
+
     res.render('user-add', {nama: "Muhammad Adityo Fathur Rahim",
     title: 'Add User Page', 
     success_msg: req.flash('success_msg'),
-    warning_msg: req.flash('warning_msg')
+    warning_msg: req.flash('warning_msg'),
+    user: req.user
     })
 })
 
@@ -215,7 +231,13 @@ app.post('/users/add', [
     }),
     check('email', 'Email is invalid!').isEmail()],
 async (req, res) => {
-    let { name, email, password, password2 } = req.body
+    // Pengkondisian apabila user role admin mencoba mengakses halaman user list
+    if (req.user.role == "admin") {
+        res.redirect(`/`)
+        return
+    }
+
+    let { name, email, password } = req.body
     const role = "admin"
     // console.log({ name, email, password, password2 });
     const errors = validationResult(req);
@@ -224,8 +246,9 @@ async (req, res) => {
         res.render('user-add', {
         title: 'Add User Page', errors: errors.array(), tempParams: req.body,
         success_msg: req.flash('success_msg'),
-        warning_msg: req.flash('warning_msg')
-    })
+        warning_msg: req.flash('warning_msg'),
+        user: req.user
+        })
     } else {
         let hashPass = await bcrypt.hash(password, 10)
         //Mengecek input data email apabila terjadi duplikat pada database
@@ -327,6 +350,12 @@ async (req, res) => {
 
 //Route list ketika tombol delete ditekan pada sebuah baris data customer di halaman customer.ejs
 app.get('/users/delete/:id', checkNotAuthenticated, async (req, res) => {
+    // Pengkondisian apabila user role admin mencoba mengakses halaman user list
+    if (req.user.role == "admin") {
+        res.redirect(`/`)
+        return
+    }
+    
     //Variabel untuk menyimpan sebuah object dari data User yang dipilih berdasarkan id
     const query = await pool.query(`SELECT * FROM public."user" WHERE id = '${req.params.id}'`)
     const usr = query.rows[0];
