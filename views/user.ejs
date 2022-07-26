@@ -5,13 +5,20 @@
         <hr>
         <br>
         <h3>Users List</h3>
-        <a href="/users/add" class="btn btn-primary">Add User</a>
+        <% if (user.role != "admin") { %>
+            <a href="/users/add" class="btn btn-primary">Add User</a>
+        <% } %>
         <!-- Pengkondisian bila terdapat pesan flash message yang ingin ditampilkan -->
         <% if (msg.length !== 0) { %>
             <div class="alert alert-warning mt-3" role="alert">
                 <%= msg %> 
             </div>
         <% } %>
+        <% if (success_msg.length !== 0) { %>
+            <div class="alert alert-success mt-3" role="alert">
+                <%= success_msg %> 
+            </div>
+        <% }  %>
         <table class="table mt-3">
             <thead class="table-dark">
               <tr>
@@ -42,8 +49,10 @@
                             <td><%= userData.role %></td>
                             <td>
                                 <a href="/users/<%= userData.id%>" class="badge rounded-pill btn-success p-2">Detail</a>
-                                <% if (userData.role == "admin") { %>
-                                    <a href="/users/delete/<%= userData.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= userData.name%> from data?')">Delete</a>
+                                <% if (userData.role == "admin" && userData.id != user.id) { %>
+                                    <% if (user.role != "admin") { %>
+                                        <a href="/users/delete/<%= userData.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= userData.name%> from data?')">Delete</a>
+                                    <% } %>
                                 <% } %>
                             </td>
                         </tr>

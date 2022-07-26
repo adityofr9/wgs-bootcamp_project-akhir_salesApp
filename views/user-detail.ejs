@@ -16,7 +16,7 @@
                   <p class="card-text">Role: <%= usr.role %></p>
                   <br>
                   <a href="/users/edit/<%= usr.id%>" class="badge rounded-pill btn-primary p-2">Edit</a>
-                  <% if (usr.role == "admin") { %>
+                  <% if (usr.id != user.id) { %>
                     <a href="/users/delete/<%= usr.id%>" class="badge rounded-pill btn-danger p-2">Delete</a>
                   <% } %>
                   <br>

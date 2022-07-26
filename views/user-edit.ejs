@@ -1,0 +1,67 @@
+<div class="container">
+    <div class="p-5" style="margin-top: 50px;">
+        <h1>Edit User</h1>
+        <p>This is edit User form</p>
+        <hr>
+        <% if (!usr) { %>
+            <div class="alert alert-danger" role="alert">
+                User Data is not found! <br>
+                <a href="/users" class="card-link">Back to Users list page</a>
+            </div>
+        <% } else { %>
+            <% if (warning_msg.length !== 0) { %>    
+                <div class="alert alert-warning mt-3" role="alert">
+                    <%= warning_msg %> 
+                </div>
+            <% } %>
+            <br>
+            <!-- Pengkondisian apabila terdapat error untuk memunculkan pesan alert -->
+            <% if (typeof errors != 'undefined') { %>
+                <div class="alert alert-danger" role="alert">
+                    <ul>
+                        <% errors.forEach( error => { %>
+                        <li><%= error.msg %> </li>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+            <form method="post" action="/users/edit/<%= usr.id %>" class="col-6" enctype="application/x-www-form-urlencoded">
+                <div class="mb-3">
+                    <label for="inputName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="inputName" name="name" value="<%= usr.name %>" required>
+                </div>
+                <% if (user?.role === "super admin") { %>
+                    <div class="mb-3">
+                        <label for="inputRoleUsr" class="form-label">User role</label>
+                        <% if (usr.role === "super admin") { %>
+                            <input type="hidden" class="form-control" id="inputRoleUsr" name="role" value="<%= usr.role %>" required>
+                            <select class="form-control" id="inputRoleUsr" name="" aria-label="Default select example" disabled>
+                                <option value="super admin" selected>Super Admin</option>
+                            </select>
+                        <% } else { %>
+                            <select class="form-control" id="inputRoleUsr" name="role" aria-label="Default select example">
+                                <option disabled>Select User Role</option>
+                                <option value="super admin">Super Admin</option>
+                                <option value="admin" selected>Admin</option>
+                            </select>
+                        <% } %>
+                    </div>
+                <% } %>
+                <div class="mb-3">
+                    <label for="inputEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="inputEmail" name="email" value="<%= usr.email %>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label">New Password</label>
+                    <input type="password" class="form-control" id="inputPassword" name="password" minlength="6">
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="password2" minlength="6">
+                </div>
+                <p class="fs-6 mt-1">*Please blank the new password and confirm new password if you won't change the password! </p>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        <% } %>
+    </div>
+</div>

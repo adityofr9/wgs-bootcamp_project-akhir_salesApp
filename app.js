@@ -159,13 +159,30 @@ app.post('/login', passport.authenticate('local', {
     successFlash: true
 }))
 
+//Route untuk tombol logout
+app.get("/users/logout", (req, res) => {
+    req.logOut(
+        function(err) {
+            if (err) {
+                return next(err)
+            }
+            req.flash('success_msg', "You have been logged out!")
+            res.redirect('/login')
+        }
+    )
+})
+
 //Halaman list user
 app.get('/users', checkNotAuthenticated, async (req, res) => {
     const query = await pool.query('SELECT * FROM public."user" ORDER BY id ASC')
     const usr =  query.rows;
+    if (req.user.role == "admin") {
+        res.redirect(`/users/${req.user.id}`)
+    }
     res.render('user', {
         title: 'Users List Page',
-        usr,
+        usr, 
+        success_msg: req.flash('success_msg'),
         msg: req.flash('msg'),      //Parameter untuk menerima pesan flash message
         user: req.user
     })
@@ -185,20 +202,7 @@ app.get('/users/:id', checkNotAuthenticated, async (req, res) => {
     //Variabel untuk menyimpan sebuah object dari data User yang dipilih berdasarkan id
     const query = await pool.query(`SELECT * FROM public."user" WHERE id = '${req.params.id}'`)
     const usr = query.rows[0];
-    res.render('user-detail', {title: 'Detail User Page', usr})
-})
-
-//Route untuk tombol logout
-app.get("/users/logout", checkNotAuthenticated, (req, res) => {
-    req.logOut(
-        function(err) {
-            if (err) {
-                return next(err)
-            }
-            req.flash('success_msg', "You have been logged out!")
-            res.redirect('/login')
-        }
-    )
+    res.render('user-detail', {title: 'Detail User Page', usr, user: req.user})
 })
 
 //Menerima input dari form tambah user
@@ -241,6 +245,101 @@ async (req, res) => {
     }
 })
 
+//Edit User
+app.get('/users/edit/:id', checkNotAuthenticated, async (req, res) => {
+    //Variabel untuk menyimpan sebuah object dari data User yang dipilih berdasarkan id
+    const query = await pool.query(`SELECT * FROM public."user" WHERE id = '${req.params.id}'`)
+    const usr = query.rows[0];
+    res.render('user-edit', {
+        title: 'Edit User Page',
+        warning_msg: req.flash('warning_msg'),
+        usr, 
+        user: req. user})
+})
+
+//Menerima input edit User
+app.post('/users/edit/:id', [
+    body('password2').custom(async (value, {req}) => {
+        if (value !== req.body.password) {
+            throw new Error('Password do not match');
+        }
+        // console.log('ini apa??');
+        //     console.log(err);
+        return true;
+    }),
+    check('email', 'Email is invalid!').isEmail()], 
+async (req, res) => {
+    const errors = validationResult(req)
+    //Variabel untuk menyimpan sebuah object dari data User yang dipilih berdasarkan id
+    const query = await pool.query(`SELECT * FROM public."user" WHERE id = '${req.params.id}'`)
+    const usr = query.rows[0];
+    
+    if (!errors.isEmpty()) {
+        res.render('user-edit', {
+            title: 'Edit User Page',
+            errors: errors.array(),
+            warning_msg: req.flash('warning_msg'),
+            usr,
+            user: req.user,
+        })
+        return
+    }
+        
+    const { name, email, password, password2, role } = req.body
+    const hashPass = await bcrypt.hash(password, 10)
+    const paramsUsr = req.params.id
+    //Mengecek input data email apabila terjadi duplikat pada database
+    //public."user" karena aturan dari postgres untuk tabel bernama user
+    const query2 = await pool.query(`SELECT * FROM public."user" WHERE email = '${email}'`)
+    const emailUsr = query2.rows[0]
+    console.log('Ini email');
+    console.log(email);
+    console.log('Ini email lama');
+    console.log(usr.email);
+    if (emailUsr) {
+        if (usr.email != email) {   
+            console.log('Email udah dipake');
+            req.flash('warning_msg', `Email: ${email} has been used!`)
+            res.redirect(`/users/edit/${paramsUsr}`)
+            return
+        }
+    } 
+    if (password == '' || password2 == '') {
+        console.log('password kosong');
+        await pool.query(`UPDATE public."user" SET
+                        name = '${name}', 
+                        email ='${email}', 
+                        role = '${role}'
+                        WHERE id = '${paramsUsr}'`)
+        req.flash('success_msg', `User: ${usr.name} has been added successfully!`)
+    } else {
+        console.log('password terisi');
+        await pool.query(`UPDATE public."user" SET
+                        name = '${name}', 
+                        email ='${email}', 
+                        password = '${hashPass}', 
+                        role = '${role}'
+                        WHERE id = '${paramsUsr}'`)
+        req.flash('success_msg', `User: ${usr.name} has been added successfully!`)
+    }
+    res.redirect('/users')
+})
+
+//Route list ketika tombol delete ditekan pada sebuah baris data customer di halaman customer.ejs
+app.get('/users/delete/:id', checkNotAuthenticated, async (req, res) => {
+    //Variabel untuk menyimpan sebuah object dari data User yang dipilih berdasarkan id
+    const query = await pool.query(`SELECT * FROM public."user" WHERE id = '${req.params.id}'`)
+    const usr = query.rows[0];
+    //Pengkondisian apabila data yang dipilih tidak ditemukan atau kosong
+    if (!usr) {
+        req.flash('msg', 'Customer Data cannot be delete, data is not found!')
+    } else {
+        //Kueri menghapus data user yang dipilih
+        pool.query(`DELETE FROM public."user" WHERE id = '${req.params.id}'`)
+        req.flash('msg', 'Customer Data has been successfully deleted!')
+    }
+    res.redirect('/users')
+})
 
 //Fungsi authenticated untuk melindungi akses ke route
 function checkAuthenticated(req, res, next) {
