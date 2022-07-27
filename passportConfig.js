@@ -16,7 +16,7 @@ const initialize = (passport) => {
                 throw err
             }
 
-            console.log(`test ${results.rows[0]}`);
+            // console.log(`test ${results.rows[0]}`);
             
             //Pengkondisian apabila data user ditemukan atau tidak
             if (results.rows.length > 0) {

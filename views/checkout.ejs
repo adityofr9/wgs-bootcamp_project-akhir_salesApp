@@ -1,0 +1,78 @@
+<% let rupiah = Intl.NumberFormat('id-ID') %> 
+<div class="container">
+    <div class="row" style="margin-top: 100px;">
+        <div class="col-3">
+            <h3>Customer</h3>
+            <h6 class="mt-3">Please select customer below:</h6>
+            <form method="post" action="/customer">
+                <div class="mb-3">
+                    <label for="inputName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="inputName" name="name" value="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="inputMobile" class="form-label">Mobile Phone</label>
+                    <input type="number" class="form-control" id="inputMobile" name="mobile" value="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="inputAddress" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="inputAddress" name="address" value="">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div class="col-9">
+            <h3>Cart List</h3>
+            <!-- Pengkondisian apabila data kosong -->
+            <% if (typeof cart === "undefined") { %>
+                <div class="alert alert-danger mt-3 text-center" role="alert">
+                    <b>Cart is empty!</b>
+                </div>
+            <% } else { %>
+            <a href="/sellproduct" class="btn btn-primary mb-3">Add More Cart</a>
+            <table class="table">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Code Product</th>
+                        <th scope="col">Name Product</th>
+                        <th scope="col">Qty <sub>(Kilograms)</sub></th>
+                        <th scope="col">Price per Kg</th>
+                        <th scope="col">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+
+                    <% let total = 0 %> 
+                    <% cart.forEach((cartPdt, i) => { %>
+                        <% let sub = parseFloat(cartPdt.quantity * cartPdt.price)%> 
+                        <% total += +sub %> 
+                        <tr>
+                            <th class="align-middle" scope="row"><%= i+1  %></th>
+                            <td class="align-middle"><a data-fancybox href="../img/<%= cartPdt.imgPdt %>"><img src="../img/<%= cartPdt.imgPdt %>" width="70"></a></td>
+                            <td class="align-middle"><%= cartPdt.code %></td>
+                            <td class="align-middle"><%= cartPdt.name_product %></td>
+                            <td class="align-middle"><%= cartPdt.quantity %> Kg<br>
+                                <div class="btn-group">
+                                    <a href="/checkout/update/<%= cartPdt.code%>?action=add">+</a>&nbsp;
+                                    <a href="/checkout/update/<%= cartPdt.code%>?action=remove">-</a>&nbsp;
+                                    <a href="/checkout/update/<%= cartPdt.code%>?action=clear">Clear</a>
+                                </div>
+                            </td>
+                            <td class="align-middle">Rp. <%= rupiah.format(cartPdt.price) %></td>
+                            <td class="align-middle">Rp. <%= rupiah.format(sub) %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+                <tfoot class="table-group-divider">
+                    <tr><td colspan="8" align="right"><b>Total: Rp. <%= rupiah.format(total) %></b></td></tr>
+                    <tr>
+                        <td colspan="6" align="right"><a class="btn btn-danger" href="/checkout/clear" role="button">Clear</a></td>
+                        <td colspan="7" align="right"><a class="btn btn-success" href="#" role="button">Done</a></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <% } %> 
+        </div>
+    </div>
+</div>

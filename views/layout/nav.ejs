@@ -1,51 +1,59 @@
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <div class="container-fluid">
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
-              <li class="nav-item">
-                <a class="nav-link" href="/">Home</a>
-              </li>
-              <% if (user.role == "super admin") { %>
-                <li class="nav-item">
-                  <a class="nav-link" href="/users">User</a>
-                </li>
-              </ul>
-
-              <ul class="nav navbar-nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="/users/logout">Logout</a>
-                </li>
-              </ul>
-              
-              <% } else { %>
-              <li class="nav-item">
-                <a class="nav-link" href="/users/<%= user.id %> ">Profile</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/product">Product</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/customer">Customer</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/sellproduct">Selling</a>
-              </li>
-
-            <ul class="nav navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="/cart/checkout">Cart(
-                  <% if (typeof cart !== "undefined") { %>
-                    <%= cart.length %>
-                  <% } else { %>
-                    0
-                  <% } %>
-                  )</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/users/logout">Logout</a>
-              </li>
-            </ul>
-              <% } %> 
-          </div>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <div class="container-fluid">
+    <div class="col-auto collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <% if (user.role == "super admin") { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/users">User</a>
+            </li>
+          </ul>
         </div>
-      </nav>
+
+        <div class="col-1 collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/users/logout">Logout</a>
+            </li>
+          </ul>
+        </div>
+        
+        <% } else { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/users/<%= user.id %> ">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/product">Product</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/customer">Customer</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/sellproduct">Selling</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-2 collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/checkout">Cart(
+                <% if (typeof cart !== "undefined") { %>
+                  <%= cart.length %>
+                <% } else { %>
+                  0
+                <% } %>
+                )</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/users/logout">Logout</a>
+            </li>
+          </ul>
+        </div>
+
+        <% } %> 
+    </div>
+  </div>
+</nav>

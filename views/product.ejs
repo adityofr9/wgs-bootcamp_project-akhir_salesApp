@@ -58,7 +58,7 @@
                             <td class="align-middle"><a data-fancybox href="../img/<%= product.img_product %>"><img src="../img/<%= product.img_product %>" width="70"></a></td>
                             <td class="align-middle">
                                 <a href="/product/<%= product.id%>" class="badge rounded-pill btn-success p-2">Detail</a>
-                                <a href="/product/delete/<%= product.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= product.code_product%> - <%= product.name%> from data?')">Delete</a>
+                                <a href="/product/delete/<%= product.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= product.code_product%> - <%= product.name_product %> from data?')">Delete</a>
                             </td>
                         </tr>
                     <% }) %>
