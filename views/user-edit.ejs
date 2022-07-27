@@ -33,12 +33,18 @@
                 <% if (user?.role === "super admin") { %>
                     <div class="mb-3">
                         <label for="inputRoleUsr" class="form-label">User role</label>
-                        <% if (usr.role === "super admin") { %>
+                        <% if (usr.undeleted === true) { %>
                             <input type="hidden" class="form-control" id="inputRoleUsr" name="role" value="<%= usr.role %>" required>
                             <select class="form-control" id="inputRoleUsr" name="" aria-label="Default select example" disabled>
                                 <option value="super admin" selected>Super Admin</option>
                             </select>
-                        <% } else { %>
+                        <% } else if (usr.role === "super admin") { %>
+                            <select class="form-control" id="inputRoleUsr" name="role" aria-label="Default select example">
+                                <option disabled>Select User Role</option>
+                                <option value="super admin" selected>Super Admin</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        <% } else if (usr.role === "admin") { %>    
                             <select class="form-control" id="inputRoleUsr" name="role" aria-label="Default select example">
                                 <option disabled>Select User Role</option>
                                 <option value="super admin">Super Admin</option>

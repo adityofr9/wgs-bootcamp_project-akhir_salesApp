@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="row" style="margin-top: 100px;">
+        <div class="col-xs-12 col-md-3">
+            <h3>Category</h3>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/sellAllproduct">All Products</a></li>
+                <% catPdt.forEach((cat) => { %>
+                    <li class="list-group-item"><a href="/sellAllproduct/<%= cat.id %> "><%= cat.category %> </a></li>
+                <% }) %> 
+            </ul>
+        </div>
+        <div class="col-xs-12 col-md-1"></div>
+        <div class="col-xs-12 col-md-8"></div>
+    </div>
+</div>

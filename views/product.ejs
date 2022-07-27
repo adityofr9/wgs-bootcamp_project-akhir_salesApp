@@ -39,21 +39,24 @@
                         </th>
                     </tr>
                 <% } else { %>
-                    <!-- Pemanggilan isi properti dari setiap object contacts.json -->
                     <% pdt.forEach((product, i) => { %>
                         <tr>
-                            <th scope="row"><%= i+1  %></th>
-                            <td><%= product.code_product %></td>
-                            <td><%= product.name_product %></td>
-                            <td><%= product.category %></td>
-                            <td>Rp. <%= rupiah.format(product.price_unit) %></td>
-                            <td>Rp. <%= rupiah.format(product.price_sack) %></td>
-                            <td><%= product.stock %> Kg</td>
+                            <th class="align-middle" scope="row"><%= i+1  %></th>
+                            <td class="align-middle"><%= product.code_product %></td>
+                            <td class="align-middle"><%= product.name_product %></td>
+                            <td class="align-middle"><%= product.category %></td>
+                            <td class="align-middle">Rp. <%= rupiah.format(product.price_unit) %></td>
+                            <% if (product.price_sack === '') { %>
+                                <td class="align-middle text-center">-</td>
+                            <% } else { %>
+                                <td class="align-middle">Rp. <%= rupiah.format(product.price_sack) %></td>
+                            <% } %>
+                            <td class="align-middle"><%= product.stock %> Kg</td>
                             <!-- variabel untuk menyimpan format tanggal -->
                             <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; %> 
-                            <td><%= product.added_date.toLocaleDateString('id-ID', options) %></td>
-                            <td><img src="../img/<%= product.img_product %>" width="70"><%#= product.added_date %></td>
-                            <td>
+                            <td class="align-middle"><%= product.added_date.toLocaleDateString('id-ID', options) %></td>
+                            <td class="align-middle"><a data-fancybox href="../img/<%= product.img_product %>"><img src="../img/<%= product.img_product %>" width="70"></a></td>
+                            <td class="align-middle">
                                 <a href="/product/<%= product.id%>" class="badge rounded-pill btn-success p-2">Detail</a>
                                 <a href="/product/delete/<%= product.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= product.code_product%> - <%= product.name%> from data?')">Delete</a>
                             </td>

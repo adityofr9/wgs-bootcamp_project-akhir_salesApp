@@ -1,0 +1,30 @@
+<% let rupiah = Intl.NumberFormat('id-ID') %> 
+<div class="container">
+    <div class="row" style="margin-top: 100px;">
+        <div class="col-xs-12 col-md-3">
+            <h3>Category</h3>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/sellproduct">All Products</a></li>
+                <% catPdt.forEach((cat) => { %>
+                    <li class="list-group-item"><a href="/sellproduct/<%= cat.category%> "><%= cat.category %> </a></li>
+                <% }) %> 
+            </ul>
+        </div>
+        <div class="col-8 d-flex flex-wrap" style="margin-top: 40px;">
+            <% selPdtCat.forEach((all) => { %>
+            <div class="d-flex flex-wrap m-1">
+                <div class="card" style="width: 15rem;">
+                    <a data-fancybox href="../img/<%= all.img_product %>">
+                        <img src="../img/<%= all.img_product %>" class="card-img-top" height="200">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title"><%= all.name_product %></h5>
+                        <p class="card-text">Rp. <%= rupiah.format(all.price_unit) %></p>
+                        <a href="/cart/add/<%= all.code_product %> " class="btn btn-primary">Select Item</a>
+                    </div>
+                    </div>
+                </div>
+            <% }) %> 
+        </div>
+    </div>
+</div>

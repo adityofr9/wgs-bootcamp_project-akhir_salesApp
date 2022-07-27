@@ -40,7 +40,6 @@
                         </th>
                     </tr>
                 <% } else { %>
-                    <!-- Pemanggilan isi properti dari setiap object contacts.json -->
                     <% usr.forEach((userData, i) => { %>
                         <tr>
                             <th scope="row"><%= i+1  %></th>
@@ -49,9 +48,11 @@
                             <td><%= userData.role %></td>
                             <td>
                                 <a href="/users/<%= userData.id%>" class="badge rounded-pill btn-success p-2">Detail</a>
-                                <% if (userData.role == "admin" && userData.id != user.id) { %>
+                                <% if (userData.id != user.id) { %>
                                     <% if (user.role != "admin") { %>
-                                        <a href="/users/delete/<%= userData.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= userData.name%> from data?')">Delete</a>
+                                        <% if (userData.undeleted === false) { %>
+                                            <a href="/users/delete/<%= userData.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= userData.name%> from data?')">Delete</a>
+                                        <% } %>
                                     <% } %>
                                 <% } %>
                             </td>

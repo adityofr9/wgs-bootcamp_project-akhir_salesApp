@@ -1,0 +1,63 @@
+<% let rupiah = Intl.NumberFormat('id-ID') %> 
+<div class="container-xxl">
+    <div class="p-5" style="margin-top: 50px;">
+        <h1>Hello, <%= user.name %></h1>
+        <p>This is Selling list page</p>
+        <hr>
+        <br>
+        <h3>Selling List</h3>
+        <a href="/selling/add" class="btn btn-primary">Add selling</a>
+        <!-- Pengkondisian bila terdapat pesan flash message yang ingin ditampilkan -->
+        <% if (msg.length !== 0) { %>
+            <div class="alert alert-warning mt-3" role="alert">
+                <%= msg %> 
+            </div>
+        <% } %>
+        <table class="table mt-3 col-xl">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Price per Kg</th>
+                    <!-- <th scope="col">Price per Sack</th> -->
+                    <th scope="col">Total</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                <!-- Pengkondisian apabila data kosong -->
+                <% if (sel.length < 1) { %>
+                    <tr>
+                        <th scope="col" colspan="10">
+                            <div class="alert alert-danger mt-3 text-center" role="alert">
+                                <b>Selling data is empty!</b>
+                            </div>
+                        </th>
+                    </tr>
+                <% } else { %>
+                    <% sel.forEach((selling, i) => { %>
+                        <tr>
+                            <th class="align-middle" scope="row"><%= i+1  %></th>
+                            <!-- variabel untuk menyimpan format tanggal -->
+                            <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; %> 
+                            <td class="align-middle"><%= product.added_date.toLocaleDateString('id-ID', options) %></td>
+                            <td class="align-middle"><%=  %></td> <!-- nama customer -->
+                            <td class="align-middle"><%=  %></td> <!-- nama product -->
+                            <td class="align-middle"><%= sel.quantity %> Kg</td>
+                            <td class="align-middle">Rp. <%= rupiah.format() %></td><!-- price/kg -->
+                            <!-- <td class="align-middle">Rp. <%#= rupiah.format() %></td> --> <!-- price/sack -->
+                            <td class="align-middle">Rp. <%= rupiah.format(sel.total) %></td> <!-- total -->
+                            <td class="align-middle">
+                                <!-- <a href="/selling/<%= sel.id%>" class="badge rounded-pill btn-success p-2">Detail</a> -->
+                                <a href="/selling/delete/<%= sel.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete this from data?')">Delete</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %> 
+            </tbody>
+        </table>
+    </div>
+</div>

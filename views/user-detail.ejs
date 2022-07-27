@@ -17,7 +17,11 @@
                   <br>
                   <a href="/users/edit/<%= usr.id%>" class="badge rounded-pill btn-primary p-2">Edit</a>
                   <% if (usr.id != user.id) { %>
-                    <a href="/users/delete/<%= usr.id%>" class="badge rounded-pill btn-danger p-2">Delete</a>
+                    <% if (user.role != "admin") { %>
+                        <% if (usr.undeleted === false) { %>
+                            <a href="/users/delete/<%= usr.id%>" class="badge rounded-pill btn-danger p-2" onclick="return confirm('Are you sure to delete <%= usr.name%> from data?')">Delete</a>
+                        <% } %>
+                    <% } %>
                   <% } %>
                   <br>
                   <a href="/users" class="card-link">Back to Users list page</a>

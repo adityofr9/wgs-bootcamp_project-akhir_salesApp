@@ -15,6 +15,7 @@ initializePassport(passport)
 //Module dari controller
 const customer = require('./controller/customer.js');
 const product = require('./controller/product.js');
+const selling = require('./controller/selling.js');
 //Module Config
 const config = require('./config')
 //Memanggil database
@@ -83,11 +84,10 @@ app.get('/', checkNotAuthenticated, (req, res) => {
     });
 })
 
-//Route untuk halaman about
-// app.get('/about', checkNotAuthenticated, (req, res) => {
-//     res.render('about', {nama: "Muhammad Adityo Fathur Rahim",
-//     title: 'About Page'})
-// })
+app.get('*', (req, res, next) => {
+    res.locals.cart =  req.session.cart
+    next()
+})
 
 
 //ROUTE UNTUK CUSTOMER
@@ -131,7 +131,7 @@ app.get('/product', checkNotAuthenticated, product.loadProduct)
 
 //Route list tambah data Customer
 app.get('/product/add', checkNotAuthenticated, (req, res, next) => {
-    res.render('product-add', {title: 'Add Product Page'})
+    res.render('product-add', {title: 'Add Product Page', user: req.user})
 })
 
 //Route untuk menerima data input dari form Tambah Customer
@@ -150,6 +150,14 @@ app.post('/product/edit/:id', upload.array('img_product', 1), product.updateProd
 //Route list ketika tombol delete ditekan pada sebuah baris data product di halaman product.ejs
 app.get('/product/delete/:id', checkNotAuthenticated, product.deleteProduct);
 
+
+
+//Route Selling
+app.get('/sellproduct', checkNotAuthenticated, selling.loadSellProduct)
+app.get('/sellproduct/:category', checkNotAuthenticated, selling.catAllProduct)
+
+//Route Cart
+app.get('/cart/add/:code_product', selling.addCart)
 
 
 //ROUTE LOGIN & SUPER ADMIN
@@ -260,8 +268,8 @@ async (req, res) => {
             req.flash('warning_msg', 'Email has been used!')
             // console.log(`data email sudah ada`);
         } else {
-            await pool.query(`INSERT INTO public."user" (name, email, password, role) 
-                        VALUES ('${name}', '${email}', '${hashPass}', '${role}')`)
+            await pool.query(`INSERT INTO public."user" (name, email, password, role, undeleted) 
+                        VALUES ('${name}', '${email}', '${hashPass}', '${role}', 'false')`)
             req.flash('success_msg', 'New user has been added successfully!')
         }
         res.redirect('/users/add')
@@ -296,6 +304,7 @@ async (req, res) => {
     //Variabel untuk menyimpan sebuah object dari data User yang dipilih berdasarkan id
     const query = await pool.query(`SELECT * FROM public."user" WHERE id = '${req.params.id}'`)
     const usr = query.rows[0];
+    console.log(usr);
     
     if (!errors.isEmpty()) {
         res.render('user-edit', {
@@ -315,13 +324,8 @@ async (req, res) => {
     //public."user" karena aturan dari postgres untuk tabel bernama user
     const query2 = await pool.query(`SELECT * FROM public."user" WHERE email = '${email}'`)
     const emailUsr = query2.rows[0]
-    console.log('Ini email');
-    console.log(email);
-    console.log('Ini email lama');
-    console.log(usr.email);
     if (emailUsr) {
         if (usr.email != email) {   
-            console.log('Email udah dipake');
             req.flash('warning_msg', `Email: ${email} has been used!`)
             res.redirect(`/users/edit/${paramsUsr}`)
             return
@@ -334,7 +338,7 @@ async (req, res) => {
                         email ='${email}', 
                         role = '${role}'
                         WHERE id = '${paramsUsr}'`)
-        req.flash('success_msg', `User: ${usr.name} has been added successfully!`)
+        req.flash('success_msg', `User: ${usr.name} has been updated successfully!`)
     } else {
         console.log('password terisi');
         await pool.query(`UPDATE public."user" SET
@@ -343,7 +347,7 @@ async (req, res) => {
                         password = '${hashPass}', 
                         role = '${role}'
                         WHERE id = '${paramsUsr}'`)
-        req.flash('success_msg', `User: ${usr.name} has been added successfully!`)
+        req.flash('success_msg', `User: ${usr.name} has been updated successfully!`)
     }
     res.redirect('/users')
 })
@@ -361,7 +365,7 @@ app.get('/users/delete/:id', checkNotAuthenticated, async (req, res) => {
     const usr = query.rows[0];
     //Pengkondisian apabila data yang dipilih tidak ditemukan atau kosong
     if (!usr) {
-        req.flash('msg', 'Customer Data cannot be delete, data is not found!')
+        req.flash('msg', 'User Data cannot be delete, data is not found!')
     } else {
         //Kueri menghapus data user yang dipilih
         pool.query(`DELETE FROM public."user" WHERE id = '${req.params.id}'`)
