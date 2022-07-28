@@ -23,17 +23,17 @@
         <form method="post" action="/customer" class="col-6">
             <div class="mb-3">
                 <label for="inputName" class="form-label">Name</label>
-                <input type="text" class="form-control" id="inputName" name="name" value="<%= tempValue?.name %>" required>
+                <input type="text" pattern="[a-zA-Z]*" class="form-control" id="inputName" name="name" value="<%= tempValue?.name %>" required>
             </div>
             <div class="mb-3">
                 <label for="inputMobile" class="form-label">Mobile Phone</label>
                 <input type="number" class="form-control" id="inputMobile" name="mobile" value="<%= tempValue?.mobile %>" required>
             </div>
-            <div class="mb-3">
-                <label for="inputAddress" class="form-label">Address</label>
-                <input type="text" class="form-control" id="inputAddress" name="address" value="<%= tempValue?.address %>">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="form-floating">
+                <label for="inputAddress">Address</label>
+                <textarea class="form-control" placeholder="Customer Address" id="inputAddress" name="address"><%= tempValue?.address %></textarea>
+              </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
         </form>
     </div>
 </div>

@@ -1,0 +1,44 @@
+<div class="container">
+    <div class="p-5" style="margin-top: 50px;">
+        <h1>Hello, <%= user.name %></h1>
+        <p>This is Log page</p>
+        <hr>
+        <br>
+        <h3>Activity Log List</h3>
+        <!-- variabel untuk menyimpan format tanggal -->
+        <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; %> 
+        <!-- Pengkondisian apabila data kosong -->
+        <% if (log.length < 1) { %>
+            <div class="alert alert-danger mt-3" role="alert">
+                <b>Data Log is empty!</b>
+            </div>
+        <% } else { %>
+            <table class="table mt-3 col-xl">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">NO</th>
+                        <th scope="col">SUBJECT</th>
+                        <th scope="col">ROLE</th>
+                        <th scope="col">URL</th>
+                        <th scope="col">METHOD</th>
+                        <th scope="col">DATE</th>
+                        <th scope="col">TIME</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                <% log.forEach((logger, i) => { %>
+                    <tr>
+                        <th class="align-middle" scope="row"><%= logger.id  %></th>
+                        <td class="align-middle"><%= logger.name %></td>
+                        <td class="align-middle"><%= logger.role %></td>
+                        <td class="align-middle"><%= logger.url %></td>
+                        <td class="align-middle"><%= logger.method %></td>
+                        <td class="align-middle"><%= logger.date.toLocaleDateString('id-ID', options) %></td>
+                        <td class="align-middle"><%= logger.time %></td>
+                    </tr>
+                <% }) %>
+        <% } %> 
+            </tbody>
+          </table>
+    </div>
+</div>

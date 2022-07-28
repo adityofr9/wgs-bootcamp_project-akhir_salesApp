@@ -60,6 +60,25 @@ app.use(passport.session())
 
 app.use(flash());
 
+//Middleware untuk logger/pencatatan aktivitas log pada sistem
+app.use('/', async (req, res, next) => {
+    let userName;
+    let role;
+    if (req.user === undefined) {
+        userName = "Unregistered user"
+        role = '-'
+    } else {
+        userName = req.user.name
+        role = req.user.role
+    }
+    // console.log(req.user);
+    await pool.query(`INSERT INTO public.log(
+        name, role, url, method, date, time)
+        VALUES ('${userName}', '${role}', '${req.url}', '${req.method}', now(), now())`)
+    
+    next()
+})
+
 //Morgan dev
 app.use(morgan('dev'))
 
@@ -213,6 +232,17 @@ app.post('/users/edit/:id', [
 
 //Route list ketika tombol delete ditekan pada sebuah baris data customer di halaman customer.ejs
 app.get('/users/delete/:id', checkNotAuthenticated, userCtrl.deleteUsr)
+
+
+app.get('/log', checkNotAuthenticated, async (req, res) => {
+    const query = await pool.query('SELECT * FROM public.log ORDER BY time ASC')
+    const log =  query.rows;
+    res.render('log', {
+        title: 'Log Page',
+        log,
+        user: req.user
+    })
+})
 
 
 

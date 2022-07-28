@@ -44,20 +44,20 @@
                     <label for="inputPriceKg" class="form-label">Price per Kg</label>
                     <div class="input-group">
                         <span class="input-group-text form-control col-3">Rp.</span>
-                        <input type="number" class="form-control" id="inputPriceKg" name="price_unit" value="<%= tempValue?.price_unit %>" required>
+                        <input type="number" min="0" class="form-control" id="inputPriceKg" name="price_unit" value="<%= tempValue?.price_unit %>" required>
                     </div>
                 </div>
                 <div class="input-group col">
                     <label for="inputPriceSack" class="form-label">Price per Sack</label>
                     <div class="input-group">
                         <span class="input-group-text form-control col-3">Rp.</span>
-                        <input type="number" class="form-control" id="inputPriceSack" name="price_sack" value="<%= tempValue?.price_sack %>">
+                        <input type="number" min="0" class="form-control" id="inputPriceSack" name="price_sack" value="<%= tempValue?.price_sack %>">
                     </div>
                 </div>
             </div>
             <label for="inputStock" class="form-label">Stock</label>
             <div class="input-group mb-3">
-                <input type="number" class="form-control" id="inputStock" name="stock" value="<%= tempValue?.stock %>" required>
+                <input type="number" min="0" class="form-control" id="inputStock" name="stock" value="<%= tempValue?.stock %>" required>
                 <span class="input-group-text form-control col-1">Kg</span>
             </div>
             <div class="mb-3">

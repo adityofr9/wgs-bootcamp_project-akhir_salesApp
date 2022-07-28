@@ -124,6 +124,8 @@ const addCart = async (req, res) => {
 
 // Fungsi untuk router checkout
 const checkoutPdt = async (req, res) => {
+    const query = await pool.query('SELECT * FROM customer')
+    const cst =  query.rows;
     if (req.session.cart && req.session.cart.length == 0) {
         delete req.session.cart
         res.redirect('/checkout');
@@ -131,7 +133,8 @@ const checkoutPdt = async (req, res) => {
         res.render('checkout', {
             title: 'Checkout Selling Product',
             cart: req.session.cart,
-            user: req.user
+            user: req.user,
+            cst
         })
     }
 }

@@ -4,21 +4,13 @@
         <div class="col-3">
             <h3>Customer</h3>
             <h6 class="mt-3">Please select customer below:</h6>
-            <form method="post" action="/customer">
-                <div class="mb-3">
-                    <label for="inputName" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="inputName" name="name" value="" required>
-                </div>
-                <div class="mb-3">
-                    <label for="inputMobile" class="form-label">Mobile Phone</label>
-                    <input type="number" class="form-control" id="inputMobile" name="mobile" value="" required>
-                </div>
-                <div class="mb-3">
-                    <label for="inputAddress" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="inputAddress" name="address" value="">
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
+            <form method="post" action="">
+                <select class="form-control" id="inputRoleUsr" name="id_customer" aria-label="Default select example">
+                    <option selected disabled>Select Customer</option>
+                    <% cst.forEach((customer) => { %>
+                    <option value="<%= customer.id %>"><%= customer.name %> - <%= customer.mobile %> </option>
+                    <% }) %>
+                </select>
         </div>
         <div class="col-9">
             <h3>Cart List</h3>
@@ -26,6 +18,7 @@
             <% if (typeof cart === "undefined") { %>
                 <div class="alert alert-danger mt-3 text-center" role="alert">
                     <b>Cart is empty!</b>
+                    <br><a href="/sellproduct" class="card-link">Back to Selling Page</a>
                 </div>
             <% } else { %>
             <a href="/sellproduct" class="btn btn-primary mb-3">Add More Cart</a>
@@ -68,7 +61,8 @@
                     <tr><td colspan="8" align="right"><b>Total: Rp. <%= rupiah.format(total) %></b></td></tr>
                     <tr>
                         <td colspan="6" align="right"><a class="btn btn-danger" href="/checkout/clear" role="button">Clear</a></td>
-                        <td colspan="7" align="right"><a class="btn btn-success" href="#" role="button">Done</a></td>
+                        <td colspan="7" align="right"><a href="#" class="btn btn-primary">Done</a></td>
+            </form>
                     </tr>
                 </tfoot>
             </table>
