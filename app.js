@@ -125,7 +125,14 @@ app.get('/customer/add', checkNotAuthenticated, (req, res, next) => {
 })
 
 //Route untuk menerima data input dari form Tambah Customer
-app.post('/customer', [check('mobile', 'Mobile Phone is invalid!').isMobilePhone('id-ID')],
+app.post('/customer', [check('mobile', 'Mobile Phone is invalid!').custom(async (value) => {
+    const query = await pool.query(`SELECT * FROM customer WHERE mobile = '${value}'`)
+    const duplikat = query.rows[0];
+    if (duplikat) {
+        throw new Error('Mobile number is already used!');
+    }
+    return true;
+}).isMobilePhone('id-ID')],
     customer.addCustomer)
 
 //Route list ketika tombol detail ditekan pada sebuah baris data customer di halaman customer.ejs
@@ -136,7 +143,14 @@ app.get('/customer/edit/:id', checkNotAuthenticated, customer.editCstPage)
 
 //Menerima data input dari form Edit data customer
 app.post('/customer/edit/:id', [
-    check('mobile', 'Mobile Phone is invalid!').isMobilePhone('id-ID')],
+    check('mobile', 'Mobile Phone is invalid!').custom(async (value) => {
+        const query = await pool.query(`SELECT * FROM customer WHERE mobile = '${value}'`)
+        const duplikat = query.rows[0];
+        if (duplikat) {
+            throw new Error('Mobile number is already used!');
+        }
+        return true;
+    }).isMobilePhone('id-ID')],
     customer.updateCustomer)
 
 //Route list ketika tombol delete ditekan pada sebuah baris data customer di halaman customer.ejs
